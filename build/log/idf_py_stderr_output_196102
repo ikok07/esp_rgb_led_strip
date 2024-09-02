@@ -1,0 +1,29 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d7ee3: task_wdt_timeout_handling at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:434
+0x400d82a8: task_wdt_isr at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:507
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d666d: object_sensor_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:31
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x400d7ee3: task_wdt_timeout_handling at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:434
+0x400d82a8: task_wdt_isr at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:507
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d666d: object_sensor_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:31
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x400d7ee3: task_wdt_timeout_handling at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:434
+0x400d82a8: task_wdt_isr at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:507
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d666d: object_sensor_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:31
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x400d7ee3: task_wdt_timeout_handling at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:434
+0x400d82a8: task_wdt_isr at /home/kok/esp/esp-idf/components/esp_system/task_wdt/task_wdt.c:507
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d666d: object_sensor_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:31
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0m

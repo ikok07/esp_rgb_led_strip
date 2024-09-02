@@ -1,0 +1,368 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d46c6: uart_ll_get_txfifo_len at /home/kok/esp/esp-idf/components/hal/esp32/include/hal/uart_ll.h:408
+ (inlined by) uart_tx_char at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:170
+0x400d4e83: uart_write at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:223
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000182a: write in ROM
+0x400d5775: console_write at /home/kok/esp/esp-idf/components/esp_vfs_console/vfs_console.c:70
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000117d: __swrite in ROM
+0x400592fe: __sflush_r in ROM
+0x4005937a: _fflush_r in ROM
+0x400d93c5: __sfvwrite_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/fvwrite.c:251
+0x400dd27f: __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfiprintf.c:429
+ (inlined by) __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:399
+0x400dcc5d: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:1774 (discriminator 1)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400e4041: main_task at /home/kok/esp/esp-idf/components/freertos/app_startup.c:209 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d46c1: uart_ll_get_txfifo_len at /home/kok/esp/esp-idf/components/hal/esp32/include/hal/uart_ll.h:408
+ (inlined by) uart_tx_char at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:170
+0x400d4e83: uart_write at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:223
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000182a: write in ROM
+0x400d5775: console_write at /home/kok/esp/esp-idf/components/esp_vfs_console/vfs_console.c:70
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000117d: __swrite in ROM
+0x400592fe: __sflush_r in ROM
+0x4005937a: _fflush_r in ROM
+0x400d93c5: __sfvwrite_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/fvwrite.c:251
+0x400dd27f: __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfiprintf.c:429
+ (inlined by) __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:399
+0x400dcc5d: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:1774 (discriminator 1)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400e4041: main_task at /home/kok/esp/esp-idf/components/freertos/app_startup.c:209 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x400d46cb: uart_ll_get_txfifo_len at /home/kok/esp/esp-idf/components/hal/esp32/include/hal/uart_ll.h:408
+ (inlined by) uart_tx_char at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:170
+0x400d4e83: uart_write at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:223
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000182a: write in ROM
+0x400d5775: console_write at /home/kok/esp/esp-idf/components/esp_vfs_console/vfs_console.c:70
+0x400d5c09: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000117d: __swrite in ROM
+0x400592fe: __sflush_r in ROM
+0x4005937a: _fflush_r in ROM
+0x400d93c5: __sfvwrite_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/fvwrite.c:251
+0x400dd27f: __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfiprintf.c:429
+ (inlined by) __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:399
+0x400dcc5d: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:1774 (discriminator 1)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400e4041: main_task at /home/kok/esp/esp-idf/components/freertos/app_startup.c:209 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x4000bfed: _xtos_set_intlevel in ROM
+0x40087a96: vPortClearInterruptMaskFromISR at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h:560
+ (inlined by) xTaskGetSchedulerState at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:5019
+0x40087b95: vTaskDelay at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:1563
+0x400d666f: object_sensor_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:33 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+[0m
+[1;31mNone[0m
+[0;33mWaiting for the device to reconnect[0m[0;33m0x40081845: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x400858a9: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008b6e5: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x40082743: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:133
+0x40082881: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400828fa: __retarget_lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:321
+0x400d9e3a: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:846 (discriminator 2)
+0x400d946d: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e45f9: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008b655: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6645: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:19 (discriminator 1)
+0x40082ff5: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x400830c7: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082da1: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x40084697: xt_utils_wait_for_intr at /home/kok/esp/esp-idf/components/xtensa/include/xt_utils.h:82
+ (inlined by) esp_cpu_wait_for_intr at /home/kok/esp/esp-idf/components/esp_hw_support/cpu.c:55
+0x400d2233: esp_vApplicationIdleHook at /home/kok/esp/esp-idf/components/esp_system/freertos_hooks.c:58
+0x40086f0e: prvIdleTask at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:4344 (discriminator 1)
+0x4008610d: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m[0m
+[0m

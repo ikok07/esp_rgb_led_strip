@@ -27,7 +27,7 @@ static size_t rmt_encode_led_strip(rmt_encoder_t *encoder, rmt_channel_handle_t 
 
     switch (led_encoder->state) {
         case RMT_ENCODING_RESET: // Send RGB data
-            encoded_symbols += bytes_encoder->encode(bytes_encoder, tx_channel, primary_data, data_size, %session_state);
+            encoded_symbols += bytes_encoder->encode(bytes_encoder, tx_channel, primary_data, data_size, &session_state);
             if (session_state & RMT_ENCODING_COMPLETE) {
                 led_encoder->state = RMT_ENCODING_COMPLETE;
             }
@@ -35,6 +35,7 @@ static size_t rmt_encode_led_strip(rmt_encoder_t *encoder, rmt_channel_handle_t 
                 state |= RMT_ENCODING_MEM_FULL;
                 goto out;
             }
+            break;
         case RMT_ENCODING_COMPLETE:
             encoded_symbols += copy_encoder->encode(copy_encoder, tx_channel, &led_encoder->reset_code, sizeof(led_encoder->reset_code), &session_state);
             if (session_state & RMT_ENCODING_COMPLETE) {
@@ -45,6 +46,7 @@ static size_t rmt_encode_led_strip(rmt_encoder_t *encoder, rmt_channel_handle_t 
                 state |= RMT_ENCODING_MEM_FULL;
                 goto out;
             }
+            break;
     }
 out:
     *ret_state = state;
