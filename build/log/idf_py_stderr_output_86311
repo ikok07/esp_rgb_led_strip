@@ -1,0 +1,17 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6a7b: rmt_app_new_transmit_config at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:111
+[0m
+[0;33m0x400818a1: panic_abort at /home/kok/esp/esp-idf/components/esp_system/panic.c:453
+0x40086255: esp_system_abort at /home/kok/esp/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008c36d: abort at /home/kok/esp/esp-idf/components/newlib/abort.c:38
+0x400d6a7b: rmt_app_new_transmit_config at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:111
+0x400d6be5: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:172
+0x400d6c8c: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:209
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0m

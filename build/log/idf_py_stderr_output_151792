@@ -1,0 +1,67 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x40086f4e: spinlock_acquire at /home/kok/esp/esp-idf/components/esp_hw_support/include/spinlock.h:130
+ (inlined by) xPortEnterCriticalTimeout at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:474
+[0m
+[0;33m0x400014fd: strlen in ROM
+0x4000150d: strlen in ROM
+[0m
+[0;33m0x40086f4b: spinlock_acquire at /home/kok/esp/esp-idf/components/esp_hw_support/include/spinlock.h:130
+ (inlined by) xPortEnterCriticalTimeout at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:474
+0x40088ca9: vPortEnterCritical at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos/portmacro.h:567
+ (inlined by) pvTaskIncrementMutexHeldCount at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:5691
+0x40086b6f: xQueueSemaphoreTake at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c:1750
+0x40086c32: xQueueTakeMutexRecursive at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c:835
+0x4008283d: lock_acquire_generic at /home/kok/esp/esp-idf/components/newlib/locks.c:146
+0x40082945: _lock_acquire_recursive at /home/kok/esp/esp-idf/components/newlib/locks.c:162
+0x400d5113: uart_write at /home/kok/esp/esp-idf/components/esp_driver_uart/src/uart_vfs.c:214
+0x400d5edd: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000182a: write in ROM
+0x400d5a49: console_write at /home/kok/esp/esp-idf/components/esp_vfs_console/vfs_console.c:70
+0x400d5edd: esp_vfs_write at /home/kok/esp/esp-idf/components/vfs/vfs.c:502 (discriminator 4)
+0x4000bd83: _write_r in ROM
+0x4000117d: __swrite in ROM
+0x400592fe: __sflush_r in ROM
+0x4005937a: _fflush_r in ROM
+0x400dbb25: __sfvwrite_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/fvwrite.c:251
+0x400df9df: __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfiprintf.c:429
+ (inlined by) __sprint_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:399
+0x400df3bd: _vfprintf_r at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vfprintf.c:1774 (discriminator 1)
+0x400dbbcd: vprintf at /builds/idf/crosstool-NG/.build/xtensa-esp-elf/src/newlib/newlib/libc/stdio/vprintf.c:34
+0x400e6ef5: esp_log_writev at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:34
+0x4008c2dd: esp_log_write at /home/kok/esp/esp-idf/components/log/src/os/log_write.c:44
+0x400d6a6d: rmt_app_msg_queue_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:92 (discriminator 1)
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x4008755e: vListInsert at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/list.c:183 (discriminator 1)
+[0m
+[0;33m0x4000c2e0: memcpy in ROM
+0x4000c2f6: memcpy in ROM
+[0m
+[0;33m0x4008755b: vListInsert at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/list.c:183 (discriminator 3)
+0x400881b1: vTaskPlaceOnEventList at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/tasks.c:3769 (discriminator 1)
+0x4008674c: xQueueGenericSend at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/queue.c:1097
+0x400d6d7f: rmt_app_send_message at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:276
+0x400d690d: object_sensor_isr_handler at /home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c:20
+0x400830b9: gpio_isr_loop at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:466
+0x4008318b: gpio_intr_service at /home/kok/esp/esp-idf/components/esp_driver_gpio/src/gpio.c:496
+0x40082e65: _xt_lowint1 at /home/kok/esp/esp-idf/components/xtensa/xtensa_vectors.S:1240
+0x4008466d: hal_utils_bitwise_reverse8 at /home/kok/esp/esp-idf/components/hal/include/hal/hal_utils.h:103
+ (inlined by) rmt_encode_bytes at /home/kok/esp/esp-idf/components/esp_driver_rmt/src/rmt_encoder.c:105
+0x400e5a8e: rmt_encode_led_strip at /home/kok/CLionProjects/esp_rgb_led_strip/main/led_encoder/led_encoder.c:30
+0x40084929: rmt_encode_check_result at /home/kok/esp/esp-idf/components/esp_driver_rmt/src/rmt_tx.c:667
+0x40084b11: rmt_tx_do_transaction at /home/kok/esp/esp-idf/components/esp_driver_rmt/src/rmt_tx.c:752
+0x400daf73: rmt_transmit at /home/kok/esp/esp-idf/components/esp_driver_rmt/src/rmt_tx.c:593
+0x400d6bae: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:166
+0x400d6c00: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:177
+0x400d6c94: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:212
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[1;31mNone[0m
+[0;33mWaiting for the device to reconnect[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m.[0m[0;33m[0m
+[0m

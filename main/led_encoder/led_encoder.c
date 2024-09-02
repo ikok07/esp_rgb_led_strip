@@ -6,7 +6,7 @@
 
 #include "led_encoder.h"
 
-const char TAG[] = "rmt_led_encoder";
+static const char TAG[] = "led_encoder";
 
 /**
  *

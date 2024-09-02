@@ -2,12 +2,11 @@
 // Created by kok on 31.08.24.
 //
 
-#include <esp_log.h>
-
-#include "driver/rmt_encoder.h"
-
 #ifndef RMT_APP_H
 #define RMT_APP_H
+
+#include "driver/rmt_tx.h"
+#include "driver/rmt_encoder.h"
 
 #define RMT_APP_SRC_CLK                       RMT_CLK_SRC_DEFAULT
 #define RMT_APP_LED_GPIO_NUM                  0
@@ -49,12 +48,12 @@ typedef struct {
     rmt_channel_handle_t tx_chan;
     rmt_transmit_config_t tx_config;
     rmt_encoder_handle_t rmt_encoder;
-    uint8_t led_strip_pixels[RMT_APP_LED_NUMBERS * 3] = {0};
+    uint8_t led_strip_pixels[RMT_APP_LED_NUMBERS * 3];
     uint32_t red;
     uint32_t green;
     uint32_t blue;
-    uint32_t *hue = NULL;
-    uint32_t *start_rgb = NULL;
+    uint32_t *hue;
+    uint32_t *start_rgb;
 } rmt_app_transmit_config_t;
 
 /**

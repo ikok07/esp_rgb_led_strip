@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "esp_rgb_led_strip",
-    "project_version":    "7e387a1-dirty",
+    "project_version":    "1359082-dirty",
     "project_path":       "/home/kok/CLionProjects/esp_rgb_led_strip",
     "idf_path":           "/home/kok/esp/esp-idf",
     "build_dir":          "/home/kok/CLionProjects/esp_rgb_led_strip/build",
@@ -1180,7 +1180,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "/home/kok/CLionProjects/esp_rgb_led_strip/build/esp-idf/main/libmain.a",
-            "sources": [ "/home/kok/CLionProjects/esp_rgb_led_strip/main/main.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/CMakeLists.txt", "/home/kok/CLionProjects/esp_rgb_led_strip/main/led_encoder/led_encoder.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/led_encoder/led_encoder.h", "/home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.h", "/home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.h" ],
+            "sources": [ "/home/kok/CLionProjects/esp_rgb_led_strip/main/main.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/CMakeLists.txt", "/home/kok/CLionProjects/esp_rgb_led_strip/main/led_encoder/led_encoder.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/led_encoder/led_encoder.h", "/home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/object_sensor/object_sensor.h", "/home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c", "/home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.h", "/home/kok/CLionProjects/esp_rgb_led_strip/main/tasks_common.h" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {

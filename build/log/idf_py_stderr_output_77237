@@ -1,0 +1,101 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d6aff: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+[0m
+[0;33m0x4000c46c: memset in ROM
+0x4000c477: memset in ROM
+[0m
+[0;33m0x400d6afc: rmt_app_transmit_data at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:146
+0x400d6bc4: rmt_app_led_off at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:167
+0x400d6c68: rmt_app_task at /home/kok/CLionProjects/esp_rgb_led_strip/main/rmt/rmt_app.c:203
+0x40086cfd: vPortTaskWrapper at /home/kok/esp/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0m

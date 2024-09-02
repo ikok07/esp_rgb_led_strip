@@ -4,8 +4,8 @@
 
 #include <string.h>
 
-#include "driver/rmt_tx.h"
 #include "freertos/FreeRTOS.h"
+#include "esp_log.h"
 #include "portmacro.h"
 
 #include "led_encoder/led_encoder.h"
@@ -45,32 +45,32 @@ static void led_strip_hsv2rgb(uint32_t hue, const uint32_t saturation, const uin
             *red = rgb_max;
             *green = rgb_min + rgb_adj;
             *blue = rgb_min;
-        break;
+            break;
         case 1:
             *red = rgb_max - rgb_adj;
             *green = rgb_max;
             *blue = rgb_min;
-        break;
+            break;
         case 2:
             *red = rgb_min;
             *green = rgb_max;
             *blue = rgb_min + rgb_adj;
-        break;
+            break;
         case 3:
             *red = rgb_min;
             *green = rgb_max - rgb_adj;
             *blue = rgb_max;
-        break;
+            break;
         case 4:
             *red = rgb_min + rgb_adj;
             *green = rgb_min;
             *blue = rgb_max;
-        break;
+            break;
         default:
             *red = rgb_max;
             *green = rgb_min;
             *blue = rgb_max - rgb_adj;
-        break;
+            break;
     }
 }
 
@@ -85,8 +85,13 @@ static void rmt_app_msg_queue_task(void *pvParams) {
         if (xQueueReceive(rmt_app_message_queue_handle, &msg, portMAX_DELAY)) {
             switch (msg.msgID) {
                 case RMT_APP_MSG_TOGGLE_LED:
-                    if (g_rmt_app_sel_mode) g_rmt_app_sel_mode = RMT_APP_LED_OFF;
-                    else g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                    if (g_rmt_app_sel_mode) {
+                        ESP_LOGI(TAG, "Selected RMT_APP_LED_OFF");
+                        g_rmt_app_sel_mode = RMT_APP_LED_OFF;
+                    } else {
+                        ESP_LOGI(TAG, "Selected RMT_APP_LED_MODE1");
+                        g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                    }
                     break;
             }
         }
@@ -106,9 +111,16 @@ static rmt_app_transmit_config_t *rmt_app_new_transmit_config(
     const uint32_t *start_rgb
 ) {
     rmt_app_transmit_config_t *config = malloc(sizeof(rmt_app_transmit_config_t));
+    if (config == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for rmt_app_transmit_config_t!");
+        abort();
+    }
     config->tx_chan = tx_chan;
     config->tx_config = tx_config;
     config->rmt_encoder = rmt_encoder;
+
+    memset(config->led_strip_pixels, 0, sizeof(config->led_strip_pixels));
+
     if (hue != NULL) {
         config->hue = malloc(sizeof(uint32_t));
         if (config->hue == NULL) {
@@ -116,7 +128,7 @@ static rmt_app_transmit_config_t *rmt_app_new_transmit_config(
             abort();
         }
         *config->hue = *hue;
-    }
+    } else config->hue = NULL;
 
     if (red != NULL) config->red = *red;
     if (green != NULL) config->green = *green;
@@ -141,9 +153,9 @@ static rmt_app_transmit_config_t *rmt_app_new_transmit_config(
 static void rmt_app_transmit_data(rmt_app_transmit_config_t *config) {
     for (int j = 0; j < RMT_APP_LED_NUMBERS; j += 3) {
         // Build RGB pixels
-        if (config->hue != NULL) {
+        if (config->hue) {
             *config->hue = j * 360 / RMT_APP_LED_NUMBERS;
-            if (config->start_rgb != NULL) *config->hue += *config->start_rgb;
+            if (config->start_rgb) *config->hue += *config->start_rgb;
             led_strip_hsv2rgb(*config->hue, 100, 100, &config->red, &config->green, &config->blue);
         }
         config->led_strip_pixels[j * 3 + 0] = config->green;
@@ -161,14 +173,12 @@ static void rmt_app_transmit_data(rmt_app_transmit_config_t *config) {
  * Turns the LED off
  */
 static void rmt_app_led_off(void) {
-    ESP_LOGI(TAG, "Selected RMT_APP_LED_OFF");
     rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(g_tx_chan, g_tx_config, g_rmt_encoder, NULL, 0, 0, 0, NULL);
     rmt_app_transmit_data(config);
+    free(config);
 }
 
 static void rmt_app_led_mode_1(void) {
-    ESP_LOGI(TAG, "Selected RMT_APP_LED_MODE1");
-
     uint32_t hue = 0;
     static uint32_t start_rgb = 0;
     for (int i = 0; i < 3; i++) {
@@ -200,10 +210,11 @@ static void rmt_app_task(void *pvParams) {
         switch (g_rmt_app_sel_mode) {
             case RMT_APP_LED_OFF:
                 rmt_app_led_off();
+                break;
             case RMT_APP_LED_MODE1:
                 rmt_app_led_mode_1();
+                break;
         }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
 

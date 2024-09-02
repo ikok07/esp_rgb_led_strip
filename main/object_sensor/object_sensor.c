@@ -9,23 +9,34 @@
 
 #include "object_sensor.h"
 #include "tasks_common.h"
+#include "rmt/rmt_app.h"
 
-const char TAG[] = "object_sensor";
+static const char TAG[] = "object_sensor";
+
+SemaphoreHandle_t g_object_sensor_semaphore_handle;
 
 /**
  * Handler executed from the object sensor's interrupt
  * @param arg additional handler arguments
  */
 static void object_sensor_isr_handler(void *arg) {
-
+    xSemaphoreGive(g_object_sensor_semaphore_handle);
 }
 
 /**
- * Creates object sensor's task
- * @param pvParams additional task parameters
+ * Object sensor's task waiting for semaphore
  */
 static void object_sensor_task(void *pvParams) {
+    while (1) {
+        if (xSemaphoreTake(g_object_sensor_semaphore_handle, portMAX_DELAY)) {
+            ESP_LOGI(TAG, "Object sensore event occurred");
 
+            // Send message to the RMT Application
+            rmt_app_send_message(RMT_APP_MSG_TOGGLE_LED);
+
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
+    }
 }
 
 void object_sensor_init(void) {
@@ -36,6 +47,8 @@ void object_sensor_init(void) {
 
     gpio_install_isr_service(ESP_INTR_FLAG_EDGE);
     gpio_isr_handler_add(OBJECT_SENSOR_GPIO, object_sensor_isr_handler, NULL);
+
+    g_object_sensor_semaphore_handle = xSemaphoreCreateBinary();
 
     xTaskCreatePinnedToCore(
         &object_sensor_task,
