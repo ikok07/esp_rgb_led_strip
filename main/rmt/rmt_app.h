@@ -22,16 +22,19 @@
 /**
  * Types of LED strip modes
  */
+#define RMT_APP_LED_MODES_COUNT               3
 typedef enum {
     RMT_APP_LED_OFF,
     RMT_APP_LED_MODE1,
+    RMT_APP_LED_MODE2
 } rmt_app_mode_e;
 
 /**
  * RMT Application messages enum
  */
 typedef enum {
-    RMT_APP_MSG_TOGGLE_LED
+    RMT_APP_MSG_TOGGLE_LED,
+    RMT_APP_MSG_CYCLE_MODE
 } rmt_app_msg_e;
 
 /**

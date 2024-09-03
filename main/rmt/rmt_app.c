@@ -85,14 +85,22 @@ static void rmt_app_msg_queue_task(void *pvParams) {
         if (xQueueReceive(rmt_app_message_queue_handle, &msg, portMAX_DELAY)) {
             switch (msg.msgID) {
                 case RMT_APP_MSG_TOGGLE_LED:
-                    if (g_rmt_app_sel_mode) {
-                        ESP_LOGI(TAG, "Selected RMT_APP_LED_OFF");
+                    if (g_rmt_app_sel_mode != RMT_APP_LED_OFF) {
+                        ESP_LOGI(TAG, "LED turned OFF");
                         g_rmt_app_sel_mode = RMT_APP_LED_OFF;
                     } else {
-                        ESP_LOGI(TAG, "Selected RMT_APP_LED_MODE1");
                         g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                        ESP_LOGI(TAG, "Selected LED mode: %d", g_rmt_app_sel_mode);
                     }
                     break;
+                case RMT_APP_MSG_CYCLE_MODE:
+                    if (g_rmt_app_sel_mode == RMT_APP_LED_OFF) {
+                        ESP_LOGI(TAG, "LED mode could not be changed because it's turned OFF");
+                        continue;
+                    }
+                    if (g_rmt_app_sel_mode == RMT_APP_LED_MODES_COUNT - 1) g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                    else g_rmt_app_sel_mode++;
+                    ESP_LOGI(TAG, "Selected LED Mode: %d", g_rmt_app_sel_mode);
             }
         }
     }
@@ -212,6 +220,9 @@ static void rmt_app_task(void *pvParams) {
                 rmt_app_led_off();
                 break;
             case RMT_APP_LED_MODE1:
+                rmt_app_led_mode_1();
+                break;
+            case RMT_APP_LED_MODE2:
                 rmt_app_led_mode_1();
                 break;
         }
