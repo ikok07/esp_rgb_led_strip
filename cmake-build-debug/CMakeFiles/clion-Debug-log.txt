@@ -8,7 +8,7 @@ Requirement files:
 Python being checked: /home/kok/.espressif/python_env/idf5.4_py3.10_env/bin/python
 -- Project sdkconfig file /home/kok/CLionProjects/esp_rgb_led_strip/sdkconfig
 -- Compiler supported targets: xtensa-esp-elf
--- App "esp_rgb_led_strip" version: 1359082-dirty
+-- App "esp_rgb_led_strip" version: 8df2295-dirty
 -- Adding linker script /home/kok/CLionProjects/esp_rgb_led_strip/cmake-build-debug/esp-idf/esp_system/ld/memory.ld
 -- Adding linker script /home/kok/CLionProjects/esp_rgb_led_strip/cmake-build-debug/esp-idf/esp_system/ld/sections.ld.in
 -- Adding linker script /home/kok/esp/esp-idf/components/esp_rom/esp32/ld/esp32.rom.ld
