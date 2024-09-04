@@ -4,6 +4,7 @@
 #include <freertos/task.h>
 #include "portmacro.h"
 
+#include "app_nvs/app_nvs.h"
 #include "wifi_app/wifi_app.h"
 #include "rmt/rmt_app.h"
 #include "object_sensor/object_sensor.h"
@@ -12,12 +13,7 @@
 void app_main() {
 
     // Initialize NVS
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
+    app_nvs_init();
 
     wifi_app_init();
     rmt_app_start();
