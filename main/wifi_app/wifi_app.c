@@ -13,6 +13,7 @@
 
 #include "esp_netif.h"
 #include "tasks_common.h"
+#include "http_server/http_server.h"
 #include "wifi_app.h"
 
 static const char TAG[] = "wifi_app";
@@ -149,9 +150,16 @@ static esp_err_t wifi_app_sta_remove_creds() {
         return err;
     }
 
-    err = nvs_erase_key(nvs_handle, "wifi");
+    err = nvs_erase_key(nvs_handle, "ssid");
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to erase AP's stored credentials from NVS! %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "Failed to erase AP's stored ssid from NVS! %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+
+    err = nvs_erase_key(nvs_handle, "pass");
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to erase AP's stored password from NVS! %s", esp_err_to_name(err));
         nvs_close(nvs_handle);
         return err;
     }
@@ -183,12 +191,14 @@ static void wifi_app_msg_queue_task(void *pvParams) {
                     event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
                     ESP_LOGI(TAG, "WIFI_APP_MSG_CONNECT");
 
+                    // http_server_send_message(HTTP_SERVER_MSG_WIFI_CONNECTING, NULL);
                     // Load credentials if option to get them from NVS is specified
                     if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
                         ESP_LOGI(TAG, "WIFI_APP_CONNECT_WITH_STORED_CREDS");
                         const esp_err_t err = wifi_app_sta_load_creds();
                         if (err != ESP_OK) {
                             xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
+                            http_server_send_message(HTTP_SERVER_MSG_WIFI_DISCONNECTED, NULL);
                             continue;
                         }
                     }
@@ -197,11 +207,8 @@ static void wifi_app_msg_queue_task(void *pvParams) {
                     break;
                 case WIFI_APP_MSG_DISCONNECT:
                     event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
-                    if (event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) {
-                        xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_USER_DICONNECT_ATTEMPT);
-                        // Clear the NVS storage
-                        wifi_app_sta_remove_creds();
-                    }
+                    xEventGroupSetBits(wifi_app_event_group_handle, WIFI_APP_USER_DICONNECT_ATTEMPT);
+                    esp_wifi_disconnect();
                     break;
                 default: break;
             }
@@ -232,6 +239,8 @@ static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base,
 
                 if ((event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) || g_wifi_app_retry_count >= WIFI_APP_STA_MAX_RETRIES) {
                     wifi_app_send_message(WIFI_APP_MSG_DISCONNECT, NULL);
+                    http_server_send_message(HTTP_SERVER_MSG_WIFI_DISCONNECTED, NULL);
+                    if (event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) wifi_app_sta_remove_creds(); // Clear the NVS storage
                     g_wifi_app_retry_count = 0;
                 } else {
                     ESP_LOGI(TAG, "WiFi retrying connection... (Attempt: %d)", g_wifi_app_retry_count + 1);
@@ -249,11 +258,11 @@ static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base,
                 ESP_LOGI(TAG, "Successfully connected to remote AP!");
                 // Save credentials to NVS if option is selected
                 event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
-                if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
+                if (!(event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS)) {
                     const esp_err_t err = wifi_app_sta_save_creds();
                     if (err == ESP_OK) xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
                 }
-
+                http_server_send_message(HTTP_SERVER_MSG_WIFI_CONNECTED, NULL);
                 break;
             default: break;
         }
@@ -304,17 +313,18 @@ static void wifi_app_ap_configure(void) {
     wifi_config_t ap_config = {
         .ap = {
             .ssid = WIFI_APP_AP_SSID,
+            .ssid_len = strlen(WIFI_APP_AP_SSID),
             .password = WIFI_APP_AP_PASSWORD,
-            .ssid_len = WIFI_APP_AP_SSID_LENGTH,
             .channel = WIFI_APP_AP_CHANNEL,
-            .authmode = WIFI_AUTH_WPA3_PSK,
+            .authmode = WIFI_AUTH_WPA2_PSK,
             .max_connection = WIFI_APP_AP_MAX_CONNECTIONS,
-            .beacon_interval = 100,
+            .beacon_interval = WIFI_AP_BEACON_INTERVAL,
         }
     };
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
     ESP_ERROR_CHECK(esp_wifi_set_bandwidth(ESP_IF_WIFI_AP, WIFI_APP_AP_BANDWIDTH));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_APP_POWER_SAVE));
 
     ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_app_event_handler, NULL, NULL));
     ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, ESP_EVENT_ANY_ID, &wifi_app_event_handler, NULL, NULL));
@@ -343,10 +353,6 @@ void wifi_app_init(void) {
     g_wifi_sta_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
     g_wifi_sta_config.sta.channel = WIFI_APP_STA_CHANNEL;
 
-    // TEMPORARY
-    // memcpy(wifi_app_get_sta_config()->sta.ssid, "", strlen("") + 1);
-    // memcpy(wifi_app_get_sta_config()->sta.password, "", strlen("") + 1);
-    // wifi_app_send_message(WIFI_APP_MSG_CONNECT, NULL);
     xEventGroupSetBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
     wifi_app_send_message(WIFI_APP_MSG_CONNECT, NULL);
 

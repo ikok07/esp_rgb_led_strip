@@ -7,15 +7,17 @@
 
 #include "esp_wifi.h"
 
+#define WIFI_APP_POWER_SAVE            WIFI_PS_NONE
+
 #define WIFI_APP_STA_CHANNEL          1
 #define WIFI_APP_STA_MAX_RETRIES      3
-#define WIFI_APP_STA_MAX_AP_RECORDS   20
+#define WIFI_APP_STA_MAX_AP_RECORDS   5
 
-#define WIFI_APP_AP_SSID              "ESP32 AP"
+#define WIFI_APP_AP_SSID              "ESP32_AP"
 #define WIFI_APP_AP_PASSWORD          "test1234"
-#define WIFI_APP_AP_SSID_LENGTH        32
 #define WIFI_APP_AP_CHANNEL            1
-#define WIFI_APP_AP_MAX_CONNECTIONS    3
+#define WIFI_APP_AP_MAX_CONNECTIONS    5
+#define WIFI_AP_BEACON_INTERVAL        100
 #define WIFI_APP_AP_DEFAULT_GATEWAY    "192.168.0.1"
 #define WIFI_APP_AP_IP_ADDRESS         "192.168.0.1"
 #define WIFI_APP_AP_NETMASK            "255.255.255.0"
