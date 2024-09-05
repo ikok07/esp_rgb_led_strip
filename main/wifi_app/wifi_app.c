@@ -13,9 +13,7 @@
 
 #include "esp_netif.h"
 #include "tasks_common.h"
-#include "app_nvs/app_nvs.h"
 #include "wifi_app.h"
-
 
 static const char TAG[] = "wifi_app";
 static const char NVS_NAMESPACE[] = "wifi_cred";
@@ -24,8 +22,9 @@ static QueueHandle_t wifi_app_message_queue_handle = NULL;
 static EventGroupHandle_t wifi_app_event_group_handle = NULL;
 
 static uint32_t WIFI_APP_USER_DICONNECT_ATTEMPT         = BIT0;
+static uint32_t WIFI_APP_CONNECT_WITH_STORED_CREDS      = BIT1;
 
-static wifi_config_t *g_wifi_sta_config = NULL;
+static wifi_config_t g_wifi_sta_config;
 static uint8_t g_wifi_app_retry_count = 0;
 
 static esp_netif_t *wifi_app_ap = NULL;
@@ -33,6 +32,24 @@ static esp_netif_t *wifi_app_sta = NULL;
 
 // --------- STA CONNECTION --------- //
 
+esp_err_t wifi_app_sta_scan(wifi_app_sta_scan_results_t *results) {
+    const wifi_scan_config_t config = {
+        .show_hidden = true,
+    };
+    esp_err_t err = esp_wifi_scan_start(&config, true);
+    if (err != ESP_OK) return err;
+    uint16_t max_records = WIFI_APP_STA_MAX_AP_RECORDS;
+    wifi_ap_record_t *records = malloc(sizeof(wifi_ap_record_t) * max_records);
+    err = esp_wifi_scan_get_ap_records(&max_records, records);
+    if (err != ESP_OK) return err;
+    results->records_count = max_records;
+    results->records = records;
+    return ESP_OK;
+}
+
+/**
+ * Connect to a remote AP
+ */
 static void wifi_app_sta_connect() {
     esp_err_t err = esp_wifi_set_config(ESP_IF_WIFI_STA, wifi_app_get_sta_config());
     if (err != ESP_OK) {
@@ -50,7 +67,7 @@ static void wifi_app_sta_connect() {
  */
 static esp_err_t wifi_app_sta_save_creds() {
     nvs_handle_t nvs_handle;
-    wifi_config_t *config = wifi_app_get_sta_config();
+    const wifi_config_t *config = wifi_app_get_sta_config();
     esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to open NVS for storing the AP's credentials! %s", esp_err_to_name(err));
@@ -58,13 +75,13 @@ static esp_err_t wifi_app_sta_save_creds() {
         return err;
     }
 
-    err = nvs_set_blob(nvs_handle, "ssid", config->sta.ssid, 32);
+    err = nvs_set_str(nvs_handle, "ssid", (char*)config->sta.ssid);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to store remote AP's credentials in the flash! %s", esp_err_to_name(err));
         nvs_close(nvs_handle);
         return err;
     }
-    err = nvs_set_blob(nvs_handle, "pass", config->sta.password, 64);
+    err = nvs_set_str(nvs_handle, "pass", (char*)config->sta.password);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to store remote AP's credentials in the flash! %s", esp_err_to_name(err));
         nvs_close(nvs_handle);
@@ -86,6 +103,7 @@ static esp_err_t wifi_app_sta_save_creds() {
  * Load last remote AP's credentials from the NVS.
  */
 static esp_err_t wifi_app_sta_load_creds() {
+    ESP_LOGI(TAG, "Loading WIFI credentials from flash...");
     wifi_config_t *config = wifi_app_get_sta_config();
     nvs_handle_t nvs_handle;
 
@@ -97,7 +115,7 @@ static esp_err_t wifi_app_sta_load_creds() {
     }
 
     size_t ssid_size = sizeof(config->sta.ssid);
-    err = nvs_get_blob(nvs_handle, "ssid", config->sta.ssid, &ssid_size);
+    err = nvs_get_str(nvs_handle, "ssid", (char*)config->sta.ssid, &ssid_size);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to retrieve remote AP's ssid from the flash! %s", esp_err_to_name(err));
         nvs_close(nvs_handle);
@@ -106,7 +124,7 @@ static esp_err_t wifi_app_sta_load_creds() {
     ESP_LOGI(TAG, "Stored SSID: %s", config->sta.ssid);
 
     size_t pass_size = sizeof(config->sta.password);
-    err = nvs_get_blob(nvs_handle, "pass", config->sta.password, &pass_size);
+    err = nvs_get_str(nvs_handle, "pass", (char*)config->sta.password, &pass_size);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to retrieve remote AP's password from the flash! %s", esp_err_to_name(err));
         nvs_close(nvs_handle);
@@ -114,6 +132,36 @@ static esp_err_t wifi_app_sta_load_creds() {
     }
 
     ESP_LOGI(TAG, "Stored password: %s", config->sta.password);
+
+    nvs_close(nvs_handle);
+    return ESP_OK;
+}
+
+/**
+ * Remove last remote AP's credentials from the NVS.
+ */
+static esp_err_t wifi_app_sta_remove_creds() {
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open NVS for removing the AP's credentials! %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+
+    err = nvs_erase_key(nvs_handle, "wifi");
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to erase AP's stored credentials from NVS! %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
+
+    err = nvs_commit(nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to commit changes after removing AP's credentials from the store! %s", esp_err_to_name(err));
+        nvs_close(nvs_handle);
+        return err;
+    }
 
     nvs_close(nvs_handle);
     return ESP_OK;
@@ -131,24 +179,28 @@ static void wifi_app_msg_queue_task(void *pvParams) {
     while(1) {
         if (xQueueReceive(wifi_app_message_queue_handle, &msg, portMAX_DELAY)) {
             switch (msg.msgID) {
-                case WIFI_APP_MSG_CONNECT_WITH_STORED_CREDS:
-                    ESP_LOGI(TAG, "WIFI_APP_MSG_CONNECT_WITH_STORED_CREDS");
-                    esp_err_t err = wifi_app_sta_load_creds();
-                    if (err == ESP_OK) wifi_app_sta_connect();
-                    break;
                 case WIFI_APP_MSG_CONNECT:
+                    event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
                     ESP_LOGI(TAG, "WIFI_APP_MSG_CONNECT");
-                    if (g_wifi_sta_config == NULL) {
-                        ESP_LOGE(TAG, "WiFi connection requested, but no configuration was set. Aborting!");
-                        continue;
+
+                    // Load credentials if option to get them from NVS is specified
+                    if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
+                        ESP_LOGI(TAG, "WIFI_APP_CONNECT_WITH_STORED_CREDS");
+                        const esp_err_t err = wifi_app_sta_load_creds();
+                        if (err != ESP_OK) {
+                            xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
+                            continue;
+                        }
                     }
+
                     wifi_app_sta_connect();
                     break;
                 case WIFI_APP_MSG_DISCONNECT:
                     event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
                     if (event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) {
                         xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_USER_DICONNECT_ATTEMPT);
-                        // TODO: Clear the NVS storage
+                        // Clear the NVS storage
+                        wifi_app_sta_remove_creds();
                     }
                     break;
                 default: break;
@@ -160,9 +212,9 @@ static void wifi_app_msg_queue_task(void *pvParams) {
 /**
  * WiFi application event handler
  */
-static void wifi_app_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
+static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base, const int32_t event_id, void *event_data) {
+    EventBits_t event_bits;
     if (event_base == WIFI_EVENT) {
-        EventBits_t event_bits;
         switch (event_id) {
             case WIFI_EVENT_STA_START:
                 ESP_LOGI(TAG, "WIFI_EVENT_STA_START");
@@ -195,8 +247,12 @@ static void wifi_app_event_handler(void *arg, esp_event_base_t event_base, int32
         switch (event_id) {
             case IP_EVENT_STA_GOT_IP:
                 ESP_LOGI(TAG, "Successfully connected to remote AP!");
-                // Save credentials to NVS
-                wifi_app_sta_save_creds();
+                // Save credentials to NVS if option is selected
+                event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
+                if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
+                    const esp_err_t err = wifi_app_sta_save_creds();
+                    if (err == ESP_OK) xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
+                }
 
                 break;
             default: break;
@@ -283,11 +339,16 @@ void wifi_app_init(void) {
     wifi_app_message_queue_handle = xQueueCreate(3, sizeof(wifi_app_message_t));
     wifi_app_event_group_handle = xEventGroupCreate();
 
+    // Configure STA mode
+    g_wifi_sta_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
+    g_wifi_sta_config.sta.channel = WIFI_APP_STA_CHANNEL;
+
     // TEMPORARY
-    // memcpy(wifi_app_get_sta_config()->sta.ssid, "iPhone 4s", strlen("iPhone 4s") + 1);
-    // memcpy(wifi_app_get_sta_config()->sta.password, "Glass1461", strlen("Glass1461") + 1);
+    // memcpy(wifi_app_get_sta_config()->sta.ssid, "", strlen("") + 1);
+    // memcpy(wifi_app_get_sta_config()->sta.password, "", strlen("") + 1);
     // wifi_app_send_message(WIFI_APP_MSG_CONNECT, NULL);
-    wifi_app_send_message(WIFI_APP_MSG_CONNECT_WITH_STORED_CREDS, NULL);
+    xEventGroupSetBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
+    wifi_app_send_message(WIFI_APP_MSG_CONNECT, NULL);
 
     xTaskCreatePinnedToCore(
         &wifi_app_msg_queue_task,
@@ -306,10 +367,5 @@ void wifi_app_send_message(const wifi_app_msg_e msgID, void *pvParams) {
 }
 
 wifi_config_t *wifi_app_get_sta_config(void) {
-    if (g_wifi_sta_config == NULL) {
-        g_wifi_sta_config = malloc(sizeof(g_wifi_sta_config));
-        g_wifi_sta_config->sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
-        g_wifi_sta_config->sta.channel = WIFI_APP_STA_CHANNEL;
-    }
-    return g_wifi_sta_config;
+    return &g_wifi_sta_config;
 }

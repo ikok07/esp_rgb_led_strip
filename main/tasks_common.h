@@ -18,7 +18,7 @@
 #define RMT_APP_MSG_QUEUE_TASK_CORE_ID        1
 
 #define WIFI_APP_TASK_PRIORITY                4
-#define WIFI_APP_TASK_STACK_SIZE              4096
+#define WIFI_APP_TASK_STACK_SIZE              5120
 #define WIFI_APP_TASK_CORE_ID                 1
 
 #define MODE_SWITCHER_TASK_PRIORITY           3

@@ -9,6 +9,7 @@
 
 #define WIFI_APP_STA_CHANNEL          1
 #define WIFI_APP_STA_MAX_RETRIES      3
+#define WIFI_APP_STA_MAX_AP_RECORDS   20
 
 #define WIFI_APP_AP_SSID              "ESP32 AP"
 #define WIFI_APP_AP_PASSWORD          "test1234"
@@ -21,9 +22,8 @@
 #define WIFI_APP_AP_BANDWIDTH          WIFI_BW_HT20
 
 typedef enum {
-    WIFI_APP_MSG_CONNECT_WITH_STORED_CREDS,
     WIFI_APP_MSG_CONNECT,
-    WIFI_APP_MSG_DISCONNECT
+    WIFI_APP_MSG_DISCONNECT,
 } wifi_app_msg_e;
 
 typedef struct {
@@ -35,6 +35,11 @@ typedef struct {
     char *ssid;
     char *password;
 } wifi_app_sta_connection_config_t;
+
+typedef struct {
+    wifi_ap_record_t *records;
+    uint8_t records_count;
+} wifi_app_sta_scan_results_t;
 
 /**
  * Initialize the WiFi Application
@@ -50,4 +55,9 @@ void wifi_app_send_message(wifi_app_msg_e msgID, void *pvParams);
  * Get the current wifi's sta configuration
  */
 wifi_config_t *wifi_app_get_sta_config(void);
+
+/**
+ * Scan for remote AP's SSIDs
+ */
+esp_err_t wifi_app_sta_scan(wifi_app_sta_scan_results_t *results);
 #endif //WIFI_APP_H
