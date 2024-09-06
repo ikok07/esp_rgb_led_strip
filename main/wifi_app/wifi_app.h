@@ -43,6 +43,7 @@ typedef struct {
     uint8_t records_count;
 } wifi_app_sta_scan_results_t;
 
+
 /**
  * Initialize the WiFi Application
  */

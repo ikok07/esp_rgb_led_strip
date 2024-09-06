@@ -20,7 +20,7 @@ static const char TAG[] = "wifi_app";
 static const char NVS_NAMESPACE[] = "wifi_cred";
 
 static QueueHandle_t wifi_app_message_queue_handle = NULL;
-static EventGroupHandle_t wifi_app_event_group_handle = NULL;
+EventGroupHandle_t wifi_app_event_group_handle = NULL;
 
 static uint32_t WIFI_APP_USER_DICONNECT_ATTEMPT         = BIT0;
 static uint32_t WIFI_APP_CONNECT_WITH_STORED_CREDS      = BIT1;
@@ -171,6 +171,7 @@ static esp_err_t wifi_app_sta_remove_creds() {
         return err;
     }
 
+    ESP_LOGI(TAG, "Successfully removed remote AP's credentials in the flash!");
     nvs_close(nvs_handle);
     return ESP_OK;
 }
@@ -191,7 +192,6 @@ static void wifi_app_msg_queue_task(void *pvParams) {
                     event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
                     ESP_LOGI(TAG, "WIFI_APP_MSG_CONNECT");
 
-                    // http_server_send_message(HTTP_SERVER_MSG_WIFI_CONNECTING, NULL);
                     // Load credentials if option to get them from NVS is specified
                     if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
                         ESP_LOGI(TAG, "WIFI_APP_CONNECT_WITH_STORED_CREDS");
@@ -246,6 +246,8 @@ static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base,
                     ESP_LOGI(TAG, "WiFi retrying connection... (Attempt: %d)", g_wifi_app_retry_count + 1);
                     wifi_app_sta_connect();
                     g_wifi_app_retry_count++;
+                    free(wifi_event_sta_disconnected);
+                    return;
                 }
 
                 free(wifi_event_sta_disconnected);
@@ -316,7 +318,7 @@ static void wifi_app_ap_configure(void) {
             .ssid_len = strlen(WIFI_APP_AP_SSID),
             .password = WIFI_APP_AP_PASSWORD,
             .channel = WIFI_APP_AP_CHANNEL,
-            .authmode = WIFI_AUTH_WPA2_PSK,
+            .authmode = WIFI_AUTH_WPA2_WPA3_PSK,
             .max_connection = WIFI_APP_AP_MAX_CONNECTIONS,
             .beacon_interval = WIFI_AP_BEACON_INTERVAL,
         }
@@ -333,6 +335,10 @@ static void wifi_app_ap_configure(void) {
 }
 
 void wifi_app_init(void) {
+    // Create message queue and event group
+    wifi_app_message_queue_handle = xQueueCreate(3, sizeof(wifi_app_message_t));
+    wifi_app_event_group_handle = xEventGroupCreate();
+
     // Start the WiFi driver
     wifi_app_start_driver();
 
@@ -344,10 +350,6 @@ void wifi_app_init(void) {
 
     // Disable verbose logging
     esp_log_level_set("wifi", ESP_LOG_ERROR);
-
-    // Create message queue and event group
-    wifi_app_message_queue_handle = xQueueCreate(3, sizeof(wifi_app_message_t));
-    wifi_app_event_group_handle = xEventGroupCreate();
 
     // Configure STA mode
     g_wifi_sta_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
