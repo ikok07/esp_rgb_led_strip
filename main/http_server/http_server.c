@@ -12,6 +12,7 @@
 #include "http_server.h"
 
 #include <cJSON.h>
+#include <esp_https_server.h>
 
 static const char TAG[] = "http_server";
 
@@ -22,6 +23,16 @@ static EventGroupHandle_t http_server_event_group = NULL;
 static uint32_t HTTP_SERVER_WIFI_CONNECTION_UPDATED         = BIT0;
 
 static http_server_wifi_connect_status_e g_http_server_wifi_connect_status = NONE;
+
+// extern const uint8_t index_html_start[] asm("_binary_index_html_start");
+// extern const uint8_t index_html_end[] asm("_binary_index_html_end");
+// extern const uint8_t script_js_start[] asm("_binary_script_js_start");
+// extern const uint8_t script_js_end[] asm("_binary_script_js_end");
+// extern const uint8_t style_css_start[] asm("_binary_style_css_start");
+// extern const uint8_t style_css_end[] asm("_binary_style_css_end");
+
+
+
 
 // --------- MONITOR TASK --------- //
 
@@ -120,6 +131,7 @@ static esp_err_t wifi_connect_handler(httpd_req_t *req) {
     ESP_LOGI(TAG, "WIFI connect requested");
     set_cors_headers(req);
     httpd_resp_set_type(req, "application/json");
+
     char body[300];
     const size_t body_size = MIN(req->content_len, sizeof(body));
 
@@ -183,6 +195,33 @@ static esp_err_t wifi_disconnect_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
+static esp_err_t get_web_file_handler(httpd_req_t *req) {
+    char filepath[1032]; // sizeof req->uri + 7 bytes for the base path
+    snprintf(filepath, sizeof(filepath), "/spiffs%s", strcmp(req->uri, "/") == 0 ? "/index.html" : req->uri);
+
+    FILE *fp = fopen(filepath, "r");
+    if (fp == NULL) {
+        ESP_LOGE(TAG, "Failed to open file: %s", filepath);
+        httpd_resp_send_404(req);
+        return ESP_OK;
+    }
+
+    if (strstr(filepath, ".html")) httpd_resp_set_type(req, "text/html");
+    else if (strstr(filepath, ".css")) httpd_resp_set_type(req, "text/css");
+    else if (strstr(filepath, ".js")) httpd_resp_set_type(req, "application/javascript");
+    else if (strstr(filepath, ".svg")) httpd_resp_set_type(req, "image/svg+xml");
+
+    char chunk[1024];
+    size_t chunk_size;
+    while ((chunk_size = fread(chunk, 1, sizeof(chunk), fp))) {
+        httpd_resp_send_chunk(req, chunk, chunk_size);
+    }
+
+    fclose(fp);
+    httpd_resp_send_chunk(req, NULL, 0);
+    return ESP_OK;
+}
+
 /**
  * Import the HTTP Server's URI handlers
  */
@@ -218,6 +257,22 @@ static void http_server_uri_handlers() {
         .user_ctx = NULL
     };
     httpd_register_uri_handler(http_server_handle, &wifi_diconnect);
+
+    const httpd_uri_t web_file = {
+        .uri = "/*",
+        .method = HTTP_GET,
+        .handler = get_web_file_handler,
+        .user_ctx = NULL
+    };
+    httpd_register_uri_handler(http_server_handle, &web_file);
+
+    const httpd_uri_t web_index = {
+        .uri = "/",
+        .method = HTTP_GET,
+        .handler = get_web_file_handler,
+        .user_ctx = NULL
+    };
+    httpd_register_uri_handler(http_server_handle, &web_index);
 }
 
 // --------- INITIAL CONFIGURATION --------- //
@@ -229,17 +284,18 @@ void http_server_init() {
     http_server_monitor_queue = xQueueCreate(3, sizeof(http_server_message_t));
     http_server_event_group = xEventGroupCreate();
 
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    httpd_config_t httpd_config = HTTPD_DEFAULT_CONFIG();
 
-    config.stack_size = HTTP_SERVER_TASK_STACK_SIZE;
-    config.task_priority = HTTP_SERVER_TASK_PRIORITY;
-    config.core_id = HTTP_SERVER_TASK_CORE_ID;
-    config.max_uri_handlers = HTTP_SERVER_MAX_URI_HANDLERS;
-    config.recv_wait_timeout = 10;
-    config.send_wait_timeout = 10;
+    httpd_config.stack_size = HTTP_SERVER_TASK_STACK_SIZE;
+    httpd_config.task_priority = HTTP_SERVER_TASK_PRIORITY;
+    httpd_config.core_id = HTTP_SERVER_TASK_CORE_ID;
+    httpd_config.max_uri_handlers = HTTP_SERVER_MAX_URI_HANDLERS;
+    httpd_config.recv_wait_timeout = 10;
+    httpd_config.send_wait_timeout = 10;
+    httpd_config.uri_match_fn = httpd_uri_match_wildcard;
 
     // Start the HTTP server
-    esp_err_t err = httpd_start(&http_server_handle, &config);
+    esp_err_t err = httpd_start(&http_server_handle, &httpd_config);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Failed to start HTTP server!");
         return;

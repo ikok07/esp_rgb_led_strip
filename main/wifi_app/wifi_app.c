@@ -171,7 +171,7 @@ static esp_err_t wifi_app_sta_remove_creds() {
         return err;
     }
 
-    ESP_LOGI(TAG, "Successfully removed remote AP's credentials in the flash!");
+    ESP_LOGI(TAG, "Successfully removed remote AP's credentials from the flash!");
     nvs_close(nvs_handle);
     return ESP_OK;
 }
@@ -195,9 +195,10 @@ static void wifi_app_msg_queue_task(void *pvParams) {
                     // Load credentials if option to get them from NVS is specified
                     if (event_bits & WIFI_APP_CONNECT_WITH_STORED_CREDS) {
                         ESP_LOGI(TAG, "WIFI_APP_CONNECT_WITH_STORED_CREDS");
+                        xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
+
                         const esp_err_t err = wifi_app_sta_load_creds();
                         if (err != ESP_OK) {
-                            xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
                             http_server_send_message(HTTP_SERVER_MSG_WIFI_DISCONNECTED, NULL);
                             continue;
                         }
@@ -206,6 +207,7 @@ static void wifi_app_msg_queue_task(void *pvParams) {
                     wifi_app_sta_connect();
                     break;
                 case WIFI_APP_MSG_DISCONNECT:
+                    ESP_LOGI(TAG, "WIFI_APP_MSG_DISCONNECT");
                     event_bits = xEventGroupGetBits(wifi_app_event_group_handle);
                     xEventGroupSetBits(wifi_app_event_group_handle, WIFI_APP_USER_DICONNECT_ATTEMPT);
                     esp_wifi_disconnect();
@@ -236,9 +238,8 @@ static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base,
                 wifi_event_sta_disconnected_t *wifi_event_sta_disconnected = malloc(sizeof(wifi_event_sta_disconnected_t));
                 *wifi_event_sta_disconnected = *(wifi_event_sta_disconnected_t*)event_data;
                 ESP_LOGI(TAG, "WIFI disconnect reason code %d", wifi_event_sta_disconnected->reason);
-
                 if ((event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) || g_wifi_app_retry_count >= WIFI_APP_STA_MAX_RETRIES) {
-                    wifi_app_send_message(WIFI_APP_MSG_DISCONNECT, NULL);
+                    xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_USER_DICONNECT_ATTEMPT);
                     http_server_send_message(HTTP_SERVER_MSG_WIFI_DISCONNECTED, NULL);
                     if (event_bits & WIFI_APP_USER_DICONNECT_ATTEMPT) wifi_app_sta_remove_creds(); // Clear the NVS storage
                     g_wifi_app_retry_count = 0;

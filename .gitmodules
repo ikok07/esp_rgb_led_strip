@@ -1,0 +1,6 @@
+[submodule "esp_wifi_connection_panel"]
+	path = esp_wifi_connection_panel
+	url = https://github.com/ikok07/esp_wifi_connection_panel.git
+[submodule "spiffs_image/esp_wifi_connection_panel"]
+	path = spiffs_image/esp_wifi_connection_panel
+	url = https://github.com/ikok07/esp_wifi_connection_panel.git
