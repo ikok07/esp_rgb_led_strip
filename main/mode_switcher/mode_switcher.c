@@ -49,7 +49,7 @@ void mode_switcher_init(void) {
     ESP_ERROR_CHECK(gpio_set_intr_type(MODE_SWITCHER_GPIO_NUM, GPIO_INTR_NEGEDGE));
     ESP_ERROR_CHECK(gpio_set_pull_mode(MODE_SWITCHER_GPIO_NUM, GPIO_PULLUP_ONLY));
 
-    esp_err_t err = gpio_install_isr_service(ESP_INTR_FLAG_EDGE);
+    const esp_err_t err = gpio_install_isr_service(ESP_INTR_FLAG_EDGE);
     if (err != ESP_ERR_INVALID_STATE && err != ESP_OK) {
         ESP_LOGE(TAG, "%s", esp_err_to_name(err));
     }

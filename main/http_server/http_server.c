@@ -12,7 +12,7 @@
 #include "http_server.h"
 
 #include <cJSON.h>
-#include <esp_https_server.h>
+
 
 static const char TAG[] = "http_server";
 
@@ -23,16 +23,6 @@ static EventGroupHandle_t http_server_event_group = NULL;
 static uint32_t HTTP_SERVER_WIFI_CONNECTION_UPDATED         = BIT0;
 
 static http_server_wifi_connect_status_e g_http_server_wifi_connect_status = NONE;
-
-// extern const uint8_t index_html_start[] asm("_binary_index_html_start");
-// extern const uint8_t index_html_end[] asm("_binary_index_html_end");
-// extern const uint8_t script_js_start[] asm("_binary_script_js_start");
-// extern const uint8_t script_js_end[] asm("_binary_script_js_end");
-// extern const uint8_t style_css_start[] asm("_binary_style_css_start");
-// extern const uint8_t style_css_end[] asm("_binary_style_css_end");
-
-
-
 
 // --------- MONITOR TASK --------- //
 
@@ -278,7 +268,7 @@ static void http_server_uri_handlers() {
 // --------- INITIAL CONFIGURATION --------- //
 
 void http_server_init() {
-    ESP_LOGI(TAG, "Initializing HTTP server");
+    ESP_LOGI(TAG, "Initializing HTTPS server");
 
     // Configure monitor queue and event group
     http_server_monitor_queue = xQueueCreate(3, sizeof(http_server_message_t));
@@ -297,14 +287,14 @@ void http_server_init() {
     // Start the HTTP server
     esp_err_t err = httpd_start(&http_server_handle, &httpd_config);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to start HTTP server!");
+        ESP_LOGE(TAG, "Failed to start HTTPS server!");
         return;
     }
-    ESP_LOGI(TAG, "Successfully started HTTP server!");
+    ESP_LOGI(TAG, "Successfully started HTTPS server!");
 
     // Add URI handlers
     http_server_uri_handlers();
-    ESP_LOGI(TAG, "HTTP URI handlers were successfully added!");
+    ESP_LOGI(TAG, "HTTPS URI handlers were successfully added!");
 
     xTaskCreatePinnedToCore(
         &http_server_monitor_task,
@@ -315,7 +305,7 @@ void http_server_init() {
         NULL,
         HTTP_SERVER_TASK_CORE_ID
     );
-    ESP_LOGI(TAG, "HTTP monitor task successfully started!");
+    ESP_LOGI(TAG, "HTTPS monitor task successfully started!");
 }
 
 void http_server_send_message(http_server_msg_e msgID, void *pvParams) {

@@ -9,7 +9,7 @@
 #include "driver/rmt_encoder.h"
 
 #define RMT_APP_SRC_CLK                       RMT_CLK_SRC_DEFAULT
-#define RMT_APP_LED_GPIO_NUM                  0
+#define RMT_APP_LED_GPIO_NUM                  27
 #define RMT_APP_MEM_BLOCK_SYMBOLS             64
 #define RMT_APP_RESOLUTION_HZ                 1 * 1000 * 1000 // 1MHz; 1 tick == 1 µs
 #define RMT_APP_TRANS_QUEUE_SIZE              4

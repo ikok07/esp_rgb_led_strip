@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/spiffs_image/esp_wifi_connection_panel" vcs="Git" />
     <mapping directory="$USER_HOME$/esp/esp-idf" vcs="Git" />
     <mapping directory="$USER_HOME$/esp/esp-idf/components/bootloader/subproject/components/micro-ecc/micro-ecc" vcs="Git" />
     <mapping directory="$USER_HOME$/esp/esp-idf/components/bt/controller/lib_esp32" vcs="Git" />
