@@ -25,7 +25,7 @@ static void mode_switcher_isr_handler(void *arg) {
     static uint32_t last_isr_time = 0;
     const uint32_t curr_time = xTaskGetTickCountFromISR();
 
-    if ((curr_time - last_isr_time) > (200 / portTICK_PERIOD_MS)) {
+    if ((curr_time - last_isr_time) > (500 / portTICK_PERIOD_MS)) {
         xSemaphoreGive(mode_switcher_semaphore_handle);
     }
 }
@@ -38,7 +38,6 @@ static void mode_switcher_task(void *pvParams) {
         if (xSemaphoreTake(mode_switcher_semaphore_handle, portMAX_DELAY)) {
             ESP_LOGI(TAG, "Mode switcher event occurred");
             rmt_app_send_message(RMT_APP_MSG_CYCLE_MODE);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
     }
 }

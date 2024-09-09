@@ -7,10 +7,12 @@
 #include "freertos/FreeRTOS.h"
 #include "esp_log.h"
 #include "portmacro.h"
+#include "nvs.h"
 
 #include "led_encoder/led_encoder.h"
 #include "tasks_common.h"
 #include "rmt_app.h"
+
 
 /**
  * RMT Applicatiom messaging queue handle
@@ -18,11 +20,17 @@
 QueueHandle_t rmt_app_message_queue_handle = NULL;
 
 static const char TAG[] = "rmt_app";
+static const char NVS_NAMESPACE[] = "rmt_app";
 
-rmt_channel_handle_t g_tx_chan = NULL;
-rmt_encoder_handle_t g_rmt_encoder = NULL;
-rmt_transmit_config_t g_tx_config;
+static rmt_channel_handle_t g_tx_chan = NULL;
+static rmt_encoder_handle_t g_rmt_encoder = NULL;
+static rmt_transmit_config_t g_tx_config;
 static rmt_app_mode_e g_rmt_app_sel_mode = RMT_APP_LED_OFF;
+
+static uint8_t g_red_value = 255;
+static uint8_t g_green_value = 0;
+static uint8_t g_blue_value = 0;
+
 
 // --------- AUX RMT METHODS --------- //
 
@@ -74,6 +82,92 @@ static void led_strip_hsv2rgb(uint32_t hue, const uint32_t saturation, const uin
     }
 }
 
+// --------- NVS STORAGE --------- //
+
+static esp_err_t rmt_app_save_config_to_flash() {
+    ESP_LOGI(TAG, "Saving RMT configuration to NVS...");
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_set_u8(nvs_handle, "mode", g_rmt_app_sel_mode);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set rmt mode in NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_set_u8(nvs_handle, "red", g_red_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set red value in NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_set_u8(nvs_handle, "green", g_green_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set green value in NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_set_u8(nvs_handle, "blue", g_blue_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set blue value in NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_commit(nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to commit RMT configuration to NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    nvs_close(nvs_handle);
+
+    ESP_LOGI(TAG, "Sucessfully saved RMT configuration to NVS!");
+    return ESP_OK;
+}
+
+static esp_err_t rmt_app_get_config_from_flash() {
+    ESP_LOGI(TAG, "Fetching RMT configuration from NVS...");
+    nvs_handle_t nvs_handle;
+    esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_get_u8(nvs_handle, "mode", (uint8_t*)&g_rmt_app_sel_mode);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_get_u8(nvs_handle, "red", &g_red_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_get_u8(nvs_handle, "green", &g_green_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get green value from NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = nvs_get_u8(nvs_handle, "blue", &g_blue_value);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get blue value from NVS: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    nvs_close(nvs_handle);
+
+    ESP_LOGI(TAG, "Sucessfully fetched RMT configuration from NVS!");
+    return ESP_OK;
+}
+
 // --------- RMT MESSAGE QUEUE --------- //
 
 /**
@@ -89,7 +183,7 @@ static void rmt_app_msg_queue_task(void *pvParams) {
                         ESP_LOGI(TAG, "LED turned OFF");
                         g_rmt_app_sel_mode = RMT_APP_LED_OFF;
                     } else {
-                        g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                        g_rmt_app_sel_mode = RMT_APP_LED_MODE_RAINBOW;
                         ESP_LOGI(TAG, "Selected LED mode: %d", g_rmt_app_sel_mode);
                     }
                     break;
@@ -98,80 +192,103 @@ static void rmt_app_msg_queue_task(void *pvParams) {
                         ESP_LOGI(TAG, "LED mode could not be changed because it's turned OFF");
                         continue;
                     }
-                    if (g_rmt_app_sel_mode == RMT_APP_LED_MODES_COUNT - 1) g_rmt_app_sel_mode = RMT_APP_LED_MODE1;
+                    if (g_rmt_app_sel_mode == RMT_APP_LED_MODES_COUNT - 1) g_rmt_app_sel_mode = RMT_APP_LED_MODE_RAINBOW;
                     else g_rmt_app_sel_mode++;
                     ESP_LOGI(TAG, "Selected LED Mode: %d", g_rmt_app_sel_mode);
             }
+            rmt_app_save_config_to_flash();
         }
     }
 }
 
 // --------- TRANSMIT RMT DATA --------- //
 
-static rmt_app_transmit_config_t *rmt_app_new_transmit_config(
-    const rmt_channel_handle_t tx_chan,
-    const rmt_transmit_config_t tx_config,
-    const rmt_encoder_handle_t rmt_encoder,
-    const uint32_t *hue,
-    const uint8_t *red,
-    const uint8_t *green,
-    const uint8_t *blue,
+/**
+ *  Creates a new RMT transmit configuration which is suited when using hue value
+ * @return RMT transmit configuration
+ */
+static rmt_app_transmit_hue_config_t *rmt_app_new_transmit_hue_config(
+    const uint32_t hue,
+    const uint8_t *saturation,
+    const uint8_t *value,
     const uint32_t *start_rgb
+) {
+    rmt_app_transmit_hue_config_t *config = malloc(sizeof(rmt_app_transmit_hue_config_t));
+    if (config == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for rmt_app_transmit_config_t!");
+        abort();
+    }
+
+    config->hue = hue;
+
+    if (saturation != NULL) config->saturation = *saturation;
+    else config->saturation = 100;
+
+    if (value != NULL) config->saturation = *value;
+    else config->value = 100;
+
+    if (start_rgb != NULL) config->start_rgb = *start_rgb;
+    else config->start_rgb = 0;
+
+    return config;
+}
+
+/**
+ *  Creates a new RMT transmit configuration which is suited when using raw RGB values
+ * @return RMT transmit configuration
+ */
+static rmt_app_transmit_config_t *rmt_app_new_transmit_config(
+    const uint8_t red,
+    const uint8_t green,
+    const uint8_t blue
 ) {
     rmt_app_transmit_config_t *config = malloc(sizeof(rmt_app_transmit_config_t));
     if (config == NULL) {
         ESP_LOGE(TAG, "Failed to allocate memory for rmt_app_transmit_config_t!");
         abort();
     }
-    config->tx_chan = tx_chan;
-    config->tx_config = tx_config;
-    config->rmt_encoder = rmt_encoder;
 
-    memset(config->led_strip_pixels, 0, sizeof(config->led_strip_pixels));
+    config->red = red;
+    config->green = green;
+    config->blue = blue;
 
-    if (hue != NULL) {
-        config->hue = malloc(sizeof(uint32_t));
-        if (config->hue == NULL) {
-            ESP_LOGE(TAG, "Failed to allocate memory for the hue variable!");
-            abort();
-        }
-        *config->hue = *hue;
-    } else config->hue = NULL;
-
-    if (red != NULL) config->red = *red;
-    if (green != NULL) config->green = *green;
-    if (blue != NULL) config->blue = *blue;
-
-    if (start_rgb != NULL) {
-        config->start_rgb = malloc(sizeof(uint32_t));
-        if (config->start_rgb == NULL) {
-            ESP_LOGE(TAG, "Failed to allocate memory for the start_rgb variable!");
-            abort();
-        }
-        *config->start_rgb = *start_rgb;
-    }
     return config;
 }
 
 /**
- * Transmit the rmt data to the LED
- * @param config RMT Application transmit configuration structure
+ * Transmit the rmt data to the LED\n
+ * @warning YOU SHOULD PASS ONLY ONE CONFIGURATION STRUCTURE TO THE METHOD
+ * @param config RMT Application transmit configuration structure suitable when using raw RGB values
+ * @param hue_config RMT Application transmit configuration structure suitable when using hue value
  */
-static void rmt_app_transmit_data(rmt_app_transmit_config_t *config) {
+static void rmt_app_transmit_data(rmt_app_transmit_config_t *config, rmt_app_transmit_hue_config_t *hue_config) {
+    if (config == NULL && hue_config == NULL) {
+        ESP_LOGE(TAG, "Unable to transfer data: No config provided!");
+        return;
+    }
+    uint8_t red = 0;
+    uint8_t green = 0;
+    uint8_t blue = 0;
+    uint8_t led_strip_pixels[RMT_APP_LED_NUMBERS * 3] = {0};
     for (int i = 0; i < RMT_APP_LED_NUMBERS * 3; i += 3) {
         // Build RGB pixels
-        if (config->hue) {
-            *config->hue = i * 360 / RMT_APP_LED_NUMBERS;
-            if (config->start_rgb) *config->hue += *config->start_rgb;
-            led_strip_hsv2rgb(*config->hue, 100, 100, &config->red, &config->green, &config->blue);
+        if (hue_config != NULL) {
+            hue_config->hue = i * 360 / RMT_APP_LED_NUMBERS;
+            hue_config->hue += hue_config->start_rgb;
+            led_strip_hsv2rgb(hue_config->hue, hue_config->saturation, hue_config->value, &red, &green, &blue);
+        } else {
+            red = config->red;
+            green = config->green;
+            blue = config->blue;
         }
-        config->led_strip_pixels[i + 0] = config->green;
-        config->led_strip_pixels[i + 1] = config->blue;
-        config->led_strip_pixels[i + 2] = config->red;
+
+        led_strip_pixels[i + 0] = green;
+        led_strip_pixels[i + 1] = red;
+        led_strip_pixels[i + 2] = blue;
     }
     // Flush RGB values to LEDs
-    ESP_ERROR_CHECK(rmt_transmit(config->tx_chan, config->rmt_encoder, config->led_strip_pixels, RMT_APP_LED_NUMBERS * 3, &config->tx_config));
-    ESP_ERROR_CHECK(rmt_tx_wait_all_done(config->tx_chan, portMAX_DELAY));
+    ESP_ERROR_CHECK(rmt_transmit(g_tx_chan, g_rmt_encoder, led_strip_pixels, RMT_APP_LED_NUMBERS * 3, &g_tx_config));
+    ESP_ERROR_CHECK(rmt_tx_wait_all_done(g_tx_chan, portMAX_DELAY));
 }
 
 // --------- RMT LED MODE METHODS --------- //
@@ -180,44 +297,28 @@ static void rmt_app_transmit_data(rmt_app_transmit_config_t *config) {
  * Turns the LED off
  */
 static void rmt_app_led_off(void) {
-    rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(g_tx_chan, g_tx_config, g_rmt_encoder, NULL, 0, 0, 0, NULL);
-    rmt_app_transmit_data(config);
+    rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(0, 0, 0);
+    rmt_app_transmit_data(config, NULL);
     free(config);
 }
 
-static void rmt_app_led_mode_1(void) {
+static void rmt_app_led_mode_rainbow(void) {
     uint32_t hue = 0;
     static uint32_t start_rgb = 0;
     for (int i = 0; i < 3; i++) {
-        rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(
-            g_tx_chan,
-            g_tx_config,
-            g_rmt_encoder,
-            &hue, NULL, NULL, NULL, &start_rgb
-        );
-        rmt_app_transmit_data(config);
+        rmt_app_transmit_hue_config_t *hue_config = rmt_app_new_transmit_hue_config(hue, NULL, NULL, &start_rgb);
+        rmt_app_transmit_data(NULL, hue_config);
         vTaskDelay(pdMS_TO_TICKS(RMT_APP_LED_CHASE_SPEED));
-        memset(config->led_strip_pixels, 0, sizeof(config->led_strip_pixels));
-        rmt_app_transmit_data(config);
+        rmt_app_transmit_data(NULL, hue_config);
         vTaskDelay(pdMS_TO_TICKS(RMT_APP_LED_CHASE_SPEED));
-        free(config->hue);
-        free(config->start_rgb);
-        free(config);
+        free(hue_config);
     }
     start_rgb += 60;
 }
 
-static void rmt_app_led_mode_2(void) {
-    uint8_t red = 1;
-    uint8_t green = 255;
-    uint8_t blue = 255;
-    rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(
-        g_tx_chan,
-        g_tx_config,
-        g_rmt_encoder,
-        NULL, &red, &green, &blue, NULL
-    );
-    rmt_app_transmit_data(config);
+static void rmt_app_led_mode_static(void) {
+    rmt_app_transmit_config_t *config = rmt_app_new_transmit_config(g_red_value, g_green_value, g_blue_value);
+    rmt_app_transmit_data(config, NULL);
     vTaskDelay(pdMS_TO_TICKS(RMT_APP_LED_CHASE_SPEED));
     free(config);
 }
@@ -233,11 +334,11 @@ static void rmt_app_task(void *pvParams) {
             case RMT_APP_LED_OFF:
                 rmt_app_led_off();
                 break;
-            case RMT_APP_LED_MODE1:
-                rmt_app_led_mode_1();
+            case RMT_APP_LED_MODE_RAINBOW:
+                rmt_app_led_mode_rainbow();
                 break;
-            case RMT_APP_LED_MODE2:
-                rmt_app_led_mode_2();
+            case RMT_APP_LED_MODE_STATIC:
+                rmt_app_led_mode_static();
                 break;
         }
     }
@@ -269,6 +370,9 @@ void rmt_app_start(void) {
     // Create message queue
     rmt_app_message_queue_handle = xQueueCreate(RMT_APP_MAX_QUEUE_SIZE, sizeof(rmt_app_message_t));
 
+    // Fetch saved configuration from NVS
+    rmt_app_get_config_from_flash();
+
     // Start RMT Application task
     xTaskCreatePinnedToCore(
         &rmt_app_task,
@@ -292,11 +396,16 @@ void rmt_app_start(void) {
     );
 }
 
-/**
- * Sends message to the RMT Application's message queue
- * @param msgID message ID
- */
+
 void rmt_app_send_message(rmt_app_msg_e msgID) {
     rmt_app_message_t msg = {.msgID = msgID};
     xQueueSend(rmt_app_message_queue_handle, &msg, portMAX_DELAY);
+}
+
+
+void rmt_app_set_rgb_color(uint8_t r, uint8_t g, uint8_t b) {
+    g_red_value = r;
+    g_green_value = g;
+    g_blue_value = b;
+    rmt_app_save_config_to_flash();
 }

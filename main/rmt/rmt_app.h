@@ -25,8 +25,8 @@
 #define RMT_APP_LED_MODES_COUNT               3
 typedef enum {
     RMT_APP_LED_OFF,
-    RMT_APP_LED_MODE1,
-    RMT_APP_LED_MODE2
+    RMT_APP_LED_MODE_RAINBOW,
+    RMT_APP_LED_MODE_STATIC
 } rmt_app_mode_e;
 
 /**
@@ -45,18 +45,22 @@ typedef struct {
 } rmt_app_message_t;
 
 /**
- * Transmit configuration
+ * Transmit configuration suitable when using hue value
  */
 typedef struct {
-    rmt_channel_handle_t tx_chan;
-    rmt_transmit_config_t tx_config;
-    rmt_encoder_handle_t rmt_encoder;
-    uint8_t led_strip_pixels[RMT_APP_LED_NUMBERS * 3];
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-    uint32_t *hue;
-    uint32_t *start_rgb;
+    uint32_t hue;
+    uint8_t saturation;
+    uint8_t value;
+    uint32_t start_rgb;
+} rmt_app_transmit_hue_config_t;
+
+/**
+ * Transmit configuration suitable when using raw RGB values
+ */
+typedef struct {
+ uint8_t red;
+ uint8_t green;
+ uint8_t blue;
 } rmt_app_transmit_config_t;
 
 /**
@@ -69,5 +73,13 @@ void rmt_app_start(void);
  * @param msgID rmt_app_msg_e (RMT Application message ID)
  */
 void rmt_app_send_message(rmt_app_msg_e msgID);
+
+/**
+ * Sets the RGB values
+ * @param r red value
+ * @param g green value
+ * @param b blue value
+ */
+void rmt_app_set_rgb_color(uint8_t r, uint8_t g, uint8_t b);
 
 #endif //RMT_APP_H

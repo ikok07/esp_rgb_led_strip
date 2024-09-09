@@ -11,10 +11,6 @@
 #define RMT_APP_TASK_STACK_SIZE               4096
 #define RMT_APP_TASK_CORE_ID                  0
 
-#define RMT_APP_MSG_QUEUE_TASK_PRIORITY       4
-#define RMT_APP_MSG_QUEUE_TASK_STACK_SIZE     4096
-#define RMT_APP_MSG_QUEUE_TASK_CORE_ID        0
-
 // MQTT's Core Id is configured in menuconfig
 #define MQTT_APP_TASK_PRIORITY                4
 #define MQTT_APP_TASK_STACK_SIZE              4096
@@ -25,11 +21,15 @@
 
 // --------- CORE 1 --------- //
 
-#define MODE_SWITCHER_TASK_PRIORITY           5
+#define RMT_APP_MSG_QUEUE_TASK_PRIORITY       5
+#define RMT_APP_MSG_QUEUE_TASK_STACK_SIZE     4096
+#define RMT_APP_MSG_QUEUE_TASK_CORE_ID        0
+
+#define MODE_SWITCHER_TASK_PRIORITY           4
 #define MODE_SWITCHER_TASK_STACK_SIZE         2048
 #define MODE_SWITCHER_TASK_CORE_ID            1
 
-#define OBJECT_SENSOR_TASK_PRIORITY           5
+#define OBJECT_SENSOR_TASK_PRIORITY           4
 #define OBJECT_SENSOR_TASK_STACK_SIZE         2048
 #define OBJECT_SENSOR_TASK_CORE_ID            1
 

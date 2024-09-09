@@ -39,8 +39,6 @@ static void object_sensor_task(void *pvParams) {
 
             // Send message to the RMT Application
             rmt_app_send_message(RMT_APP_MSG_TOGGLE_LED);
-
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
     }
 }

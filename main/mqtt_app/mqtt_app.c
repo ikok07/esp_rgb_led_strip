@@ -6,6 +6,7 @@
 #include "esp_log.h"
 
 #include "tasks_common.h"
+#include "rmt/rmt_app.h"
 #include "mqtt_app.h"
 
 static const char TAG[] = "mqtt_app";

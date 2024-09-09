@@ -5,7 +5,7 @@
 #ifndef MODE_SWITCHER_H
 #define MODE_SWITCHER_H
 
-#define MODE_SWITCHER_GPIO_NUM          33
+#define MODE_SWITCHER_GPIO_NUM          14
 
 /**
  * Configure LED mode switcher
