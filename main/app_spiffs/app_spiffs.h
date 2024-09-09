@@ -8,6 +8,6 @@
 /**
 * Initialize the SPIFFS storage
 */
-static void app_spiffs_init(void);
+void app_spiffs_init(void);
 
 #endif //APP_SPIFFS_H

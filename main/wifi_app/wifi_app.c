@@ -16,11 +16,13 @@
 #include "http_server/http_server.h"
 #include "wifi_app.h"
 
+static void (*wifi_app_connected_cb)(void);
+
 static const char TAG[] = "wifi_app";
 static const char NVS_NAMESPACE[] = "wifi_cred";
 
 static QueueHandle_t wifi_app_message_queue_handle = NULL;
-EventGroupHandle_t wifi_app_event_group_handle = NULL;
+static EventGroupHandle_t wifi_app_event_group_handle = NULL;
 
 static uint32_t WIFI_APP_USER_DICONNECT_ATTEMPT         = BIT0;
 static uint32_t WIFI_APP_CONNECT_WITH_STORED_CREDS      = BIT1;
@@ -266,6 +268,7 @@ static void wifi_app_event_handler(void *arg, const esp_event_base_t event_base,
                     if (err == ESP_OK) xEventGroupClearBits(wifi_app_event_group_handle, WIFI_APP_CONNECT_WITH_STORED_CREDS);
                 }
                 http_server_send_message(HTTP_SERVER_MSG_WIFI_CONNECTED, NULL);
+                wifi_app_connected_cb();
                 break;
             default: break;
         }
@@ -347,7 +350,7 @@ void wifi_app_init(void) {
     wifi_app_ap_configure();
 
     // Start the WiFi driver
-    esp_wifi_start();
+    ESP_ERROR_CHECK(esp_wifi_start());
 
     // Disable verbose logging
     esp_log_level_set("wifi", ESP_LOG_ERROR);
@@ -377,4 +380,8 @@ void wifi_app_send_message(const wifi_app_msg_e msgID, void *pvParams) {
 
 wifi_config_t *wifi_app_get_sta_config(void) {
     return &g_wifi_sta_config;
+}
+
+void wifi_app_cb_set(void (*callback)(void)) {
+    wifi_app_connected_cb = callback;
 }

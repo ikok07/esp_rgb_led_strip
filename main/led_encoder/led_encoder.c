@@ -98,15 +98,15 @@ esp_err_t rmt_new_led_strip_encoder(const rmt_led_strip_encoder_config_t *config
     const rmt_bytes_encoder_config_t bytes_encoder_config = {
         .bit0 = {
             .level0 = 1,
-            .duration0 = 0.3 * config->resolution / 1000000, // T0H = 0.3us
+            .duration0 = 0.4 * config->resolution / 1000000, // T0H = 0.4us
             .level1 = 0,
-            .duration1 = 0.9 * config->resolution / 1000000, // T0L = 0.9us
+            .duration1 = 0.85 * config->resolution / 1000000, // T0L = 0.85us
         },
         .bit1 = {
             .level0 = 1,
-            .duration0 = 0.9 * config->resolution / 1000000, // T1H = 0.9us
+            .duration0 = 0.8 * config->resolution / 1000000, // T1H = 0.8us
             .level1 = 0,
-            .duration1 = 0.3 * config->resolution / 1000000, // T1L = 0.3us
+            .duration1 = 0.45 * config->resolution / 1000000, // T1L = 0.45us
         },
         .flags.msb_first = 1,
     };

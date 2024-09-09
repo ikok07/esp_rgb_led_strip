@@ -11,10 +11,10 @@
 #define RMT_APP_SRC_CLK                       RMT_CLK_SRC_DEFAULT
 #define RMT_APP_LED_GPIO_NUM                  27
 #define RMT_APP_MEM_BLOCK_SYMBOLS             64
-#define RMT_APP_RESOLUTION_HZ                 1 * 1000 * 1000 // 1MHz; 1 tick == 1 µs
+#define RMT_APP_RESOLUTION_HZ                 10 * 1000 * 1000 // 10MHz; 10 tick == 1 µs
 #define RMT_APP_TRANS_QUEUE_SIZE              4
 
-#define RMT_APP_LED_NUMBERS                   60
+#define RMT_APP_LED_NUMBERS                   30
 #define RMT_APP_LED_CHASE_SPEED               10
 
 #define RMT_APP_MAX_QUEUE_SIZE                3
@@ -52,9 +52,9 @@ typedef struct {
     rmt_transmit_config_t tx_config;
     rmt_encoder_handle_t rmt_encoder;
     uint8_t led_strip_pixels[RMT_APP_LED_NUMBERS * 3];
-    uint32_t red;
-    uint32_t green;
-    uint32_t blue;
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
     uint32_t *hue;
     uint32_t *start_rgb;
 } rmt_app_transmit_config_t;

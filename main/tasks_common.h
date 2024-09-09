@@ -20,7 +20,7 @@
 #define MQTT_APP_TASK_STACK_SIZE              4096
 
 #define WIFI_APP_TASK_PRIORITY                3
-#define WIFI_APP_TASK_STACK_SIZE              4096
+#define WIFI_APP_TASK_STACK_SIZE              8192
 #define WIFI_APP_TASK_CORE_ID                 1
 
 // --------- CORE 1 --------- //

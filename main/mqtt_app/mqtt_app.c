@@ -17,7 +17,14 @@ static esp_mqtt_client_handle_t mqtt_handle;
  * @param event event handle which contains the published data received from the broker
  */
 static void mqtt_app_handle_recv_data(esp_mqtt_event_handle_t event) {
-
+    char buffer[MQTT_APP_BROKER_MAX_MSG_SIZE];
+    snprintf(buffer, MQTT_APP_BROKER_MAX_MSG_SIZE, event->data, event->data_len);
+    if (event->data_len >= MQTT_APP_BROKER_MAX_MSG_SIZE) {
+        ESP_LOGE(TAG, "Buffer overflow! MQTT message could not be stored!");
+        return;
+    }
+    buffer[event->data_len] = '\0';
+    ESP_LOGI(TAG, "%s", buffer);
 }
 
 /**
@@ -31,6 +38,13 @@ static void mqtt_app_event_handler(void *args, esp_event_base_t event_base, int3
             break;
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            // Subscribe to topic
+            signed int subscribe_flag;
+            if ((subscribe_flag = esp_mqtt_client_subscribe_single(mqtt_handle, MQTT_APP_TOPIC, MQTT_APP_QOS)) < 0) {
+                ESP_LOGE(TAG, "Failed to subscribe to topic: %s:\nError: %d", MQTT_APP_TOPIC, subscribe_flag);
+                break;
+            }
+            ESP_LOGI(TAG, "Subscribed to topic %s with QOS: %d", MQTT_APP_TOPIC, MQTT_APP_QOS);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -80,8 +94,9 @@ void mqtt_app_init(void) {
                 .topic = MQTT_APP_TOPIC,
                 .msg = MQTT_APP_LAST_WILL_MSG,
                 .qos = MQTT_APP_QOS,
-                .retain = false
-            }
+                .retain = false,
+            },
+            .disable_clean_session = true
         },
         .task = {
             .stack_size = MQTT_APP_TASK_STACK_SIZE,
@@ -94,5 +109,6 @@ void mqtt_app_init(void) {
     ESP_ERROR_CHECK(esp_mqtt_client_register_event(mqtt_handle, MQTT_EVENT_ANY, mqtt_app_event_handler, NULL));
 
     ESP_ERROR_CHECK(esp_mqtt_client_start(mqtt_handle));
+
     ESP_LOGI(TAG, "MQTT Application successfully initialized!");
 }

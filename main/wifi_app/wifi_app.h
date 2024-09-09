@@ -63,4 +63,10 @@ wifi_config_t *wifi_app_get_sta_config(void);
  * Scan for remote AP's SSIDs
  */
 esp_err_t wifi_app_sta_scan(wifi_app_sta_scan_results_t *results);
+
+/**
+ * Set callback function which is called upon wifi connection
+ */
+void wifi_app_cb_set(void (*wifi_app_connected_cb)(void));
+
 #endif //WIFI_APP_H
