@@ -23,7 +23,7 @@ static void object_sensor_isr_handler(void *arg) {
     static uint32_t last_isr_time = 0;
     const uint32_t curr_time = xTaskGetTickCountFromISR();
 
-    if ((curr_time - last_isr_time) > (200 / portTICK_PERIOD_MS)) {
+    if (curr_time - last_isr_time > pdMS_TO_TICKS(1200)) {
         xSemaphoreGive(g_object_sensor_semaphore_handle);
         last_isr_time = curr_time;
     }

@@ -25,8 +25,9 @@ static void mode_switcher_isr_handler(void *arg) {
     static uint32_t last_isr_time = 0;
     const uint32_t curr_time = xTaskGetTickCountFromISR();
 
-    if ((curr_time - last_isr_time) > (500 / portTICK_PERIOD_MS)) {
+    if (curr_time - last_isr_time > pdMS_TO_TICKS(200)) {
         xSemaphoreGive(mode_switcher_semaphore_handle);
+        last_isr_time = curr_time;
     }
 }
 

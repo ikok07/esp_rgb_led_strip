@@ -14,7 +14,7 @@
  */
 void wifi_app_connected_cb(void) {
     // Start MQTT application
-    mqtt_app_init();
+    // mqtt_app_init();
 }
 
 void app_main() {

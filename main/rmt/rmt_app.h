@@ -20,11 +20,18 @@
 #define RMT_APP_MAX_QUEUE_SIZE                3
 
 /**
+ * ON / OFF States
+ */
+typedef enum {
+    RMT_APP_LED_OFF,
+    RMT_APP_LED_ON
+} rmt_app_state_e;
+
+/**
  * Types of LED strip modes
  */
 #define RMT_APP_LED_MODES_COUNT               3
 typedef enum {
-    RMT_APP_LED_OFF,
     RMT_APP_LED_MODE_RAINBOW,
     RMT_APP_LED_MODE_STATIC
 } rmt_app_mode_e;

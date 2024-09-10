@@ -25,7 +25,8 @@ static const char NVS_NAMESPACE[] = "rmt_app";
 static rmt_channel_handle_t g_tx_chan = NULL;
 static rmt_encoder_handle_t g_rmt_encoder = NULL;
 static rmt_transmit_config_t g_tx_config;
-static rmt_app_mode_e g_rmt_app_sel_mode = RMT_APP_LED_OFF;
+static rmt_app_state_e g_rmt_app_state = RMT_APP_LED_OFF;
+static rmt_app_mode_e g_rmt_app_sel_mode = RMT_APP_LED_MODE_RAINBOW;
 
 static uint8_t g_red_value = 255;
 static uint8_t g_green_value = 0;
@@ -84,88 +85,56 @@ static void led_strip_hsv2rgb(uint32_t hue, const uint32_t saturation, const uin
 
 // --------- NVS STORAGE --------- //
 
-static esp_err_t rmt_app_save_config_to_flash() {
+static void rmt_app_save_config_to_flash() {
     ESP_LOGI(TAG, "Saving RMT configuration to NVS...");
     nvs_handle_t nvs_handle;
     esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
+
+    err = nvs_set_u8(nvs_handle, "state", g_rmt_app_state);
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to set rmt state in NVS: %s", esp_err_to_name(err));
 
     err = nvs_set_u8(nvs_handle, "mode", g_rmt_app_sel_mode);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to set rmt mode in NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to set rmt mode in NVS: %s", esp_err_to_name(err));
 
     err = nvs_set_u8(nvs_handle, "red", g_red_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to set red value in NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to set red value in NVS: %s", esp_err_to_name(err));
 
     err = nvs_set_u8(nvs_handle, "green", g_green_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to set green value in NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to set green value in NVS: %s", esp_err_to_name(err));
 
     err = nvs_set_u8(nvs_handle, "blue", g_blue_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to set blue value in NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to set blue value in NVS: %s", esp_err_to_name(err));
 
     err = nvs_commit(nvs_handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to commit RMT configuration to NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to commit RMT configuration to NVS: %s", esp_err_to_name(err));
 
     nvs_close(nvs_handle);
-
-    ESP_LOGI(TAG, "Sucessfully saved RMT configuration to NVS!");
-    return ESP_OK;
 }
 
-static esp_err_t rmt_app_get_config_from_flash() {
+static void rmt_app_get_config_from_flash() {
     ESP_LOGI(TAG, "Fetching RMT configuration from NVS...");
     nvs_handle_t nvs_handle;
     esp_err_t err = nvs_open(NVS_NAMESPACE, NVS_READWRITE, &nvs_handle);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to open NVS in order to save RMT configuration! %s", esp_err_to_name(err));
+
+    err = nvs_get_u8(nvs_handle, "state", (uint8_t*)&g_rmt_app_state);
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get rmt state from NVS: %s", esp_err_to_name(err));
 
     err = nvs_get_u8(nvs_handle, "mode", (uint8_t*)&g_rmt_app_sel_mode);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
 
     err = nvs_get_u8(nvs_handle, "red", &g_red_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get red value from NVS: %s", esp_err_to_name(err));
 
     err = nvs_get_u8(nvs_handle, "green", &g_green_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to get green value from NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get green value from NVS: %s", esp_err_to_name(err));
 
     err = nvs_get_u8(nvs_handle, "blue", &g_blue_value);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to get blue value from NVS: %s", esp_err_to_name(err));
-        return err;
-    }
+    if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get blue value from NVS: %s", esp_err_to_name(err));
 
     nvs_close(nvs_handle);
 
-    ESP_LOGI(TAG, "Sucessfully fetched RMT configuration from NVS!");
-    return ESP_OK;
 }
 
 // --------- RMT MESSAGE QUEUE --------- //
@@ -179,16 +148,16 @@ static void rmt_app_msg_queue_task(void *pvParams) {
         if (xQueueReceive(rmt_app_message_queue_handle, &msg, portMAX_DELAY)) {
             switch (msg.msgID) {
                 case RMT_APP_MSG_TOGGLE_LED:
-                    if (g_rmt_app_sel_mode != RMT_APP_LED_OFF) {
+                    if (g_rmt_app_state == RMT_APP_LED_ON) {
                         ESP_LOGI(TAG, "LED turned OFF");
-                        g_rmt_app_sel_mode = RMT_APP_LED_OFF;
+                        g_rmt_app_state = RMT_APP_LED_OFF;
                     } else {
-                        g_rmt_app_sel_mode = RMT_APP_LED_MODE_RAINBOW;
+                        g_rmt_app_state = RMT_APP_LED_ON;
                         ESP_LOGI(TAG, "Selected LED mode: %d", g_rmt_app_sel_mode);
                     }
                     break;
                 case RMT_APP_MSG_CYCLE_MODE:
-                    if (g_rmt_app_sel_mode == RMT_APP_LED_OFF) {
+                    if (g_rmt_app_state == RMT_APP_LED_OFF) {
                         ESP_LOGI(TAG, "LED mode could not be changed because it's turned OFF");
                         continue;
                     }
@@ -330,17 +299,16 @@ static void rmt_app_led_mode_static(void) {
  */
 static void rmt_app_task(void *pvParams) {
     while (1) {
-        switch (g_rmt_app_sel_mode) {
-            case RMT_APP_LED_OFF:
-                rmt_app_led_off();
+        if (g_rmt_app_state == RMT_APP_LED_ON) {
+            switch (g_rmt_app_sel_mode) {
+                case RMT_APP_LED_MODE_RAINBOW:
+                    rmt_app_led_mode_rainbow();
                 break;
-            case RMT_APP_LED_MODE_RAINBOW:
-                rmt_app_led_mode_rainbow();
+                case RMT_APP_LED_MODE_STATIC:
+                    rmt_app_led_mode_static();
                 break;
-            case RMT_APP_LED_MODE_STATIC:
-                rmt_app_led_mode_static();
-                break;
-        }
+            }
+        } else rmt_app_led_off();
     }
 }
 
