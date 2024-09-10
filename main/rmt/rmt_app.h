@@ -6,6 +6,7 @@
 #define RMT_APP_H
 
 #include "driver/rmt_tx.h"
+#include "cjson/cJSON.h"
 #include "driver/rmt_encoder.h"
 
 #define RMT_APP_SRC_CLK                       RMT_CLK_SRC_DEFAULT
@@ -30,7 +31,7 @@ typedef enum {
 /**
  * Types of LED strip modes
  */
-#define RMT_APP_LED_MODES_COUNT               3
+#define RMT_APP_LED_MODES_COUNT               2
 typedef enum {
     RMT_APP_LED_MODE_RAINBOW,
     RMT_APP_LED_MODE_STATIC
@@ -88,5 +89,11 @@ void rmt_app_send_message(rmt_app_msg_e msgID);
  * @param b blue value
  */
 void rmt_app_set_rgb_color(uint8_t r, uint8_t g, uint8_t b);
+
+/**
+ * Configure the RMT Application using JSON object
+ * @param json pointer to cJSON object
+ */
+void rmt_app_set_from_json(cJSON *json);
 
 #endif //RMT_APP_H

@@ -6,8 +6,10 @@
 #include "esp_log.h"
 
 #include "tasks_common.h"
-#include "rmt/rmt_app.h"
+#include "cjson/cJSON.h"
 #include "mqtt_app.h"
+
+#include "rmt/rmt_app.h"
 
 static const char TAG[] = "mqtt_app";
 
@@ -25,7 +27,24 @@ static void mqtt_app_handle_recv_data(esp_mqtt_event_handle_t event) {
         return;
     }
     buffer[event->data_len] = '\0';
-    ESP_LOGI(TAG, "%s", buffer);
+    cJSON *json = cJSON_Parse(buffer);
+    if (json == NULL) {
+        ESP_LOGE(TAG, "Failed to parse JSON MQTT message!");
+        return;
+    }
+    cJSON *tag = cJSON_GetObjectItemCaseSensitive(json, "tag");
+    if (tag == NULL || tag->valuestring == NULL) {
+        ESP_LOGE(TAG, "Tag field missing from JSON!");
+        return;
+    }
+
+    // Run specific task depending on the provided tag
+    if (strcmp(tag->valuestring, MQTT_APP_TAG_LED_STRIP) == 0) {
+        rmt_app_set_from_json(json);
+    }
+
+    free(json);
+    free(tag);
 }
 
 /**
@@ -91,12 +110,12 @@ void mqtt_app_init(void) {
         },
         .session = {
             .protocol_ver = MQTT_PROTOCOL_V_3_1_1,
-            .last_will = {
-                .topic = MQTT_APP_TOPIC,
-                .msg = MQTT_APP_LAST_WILL_MSG,
-                .qos = MQTT_APP_QOS,
-                .retain = false,
-            },
+            // .last_will = {
+            //     .topic = MQTT_APP_TOPIC,
+            //     .msg = MQTT_APP_LAST_WILL_MSG,
+            //     .qos = MQTT_APP_QOS,
+            //     .retain = false,
+            // },
             .disable_clean_session = true
         },
         .task = {

@@ -377,3 +377,42 @@ void rmt_app_set_rgb_color(uint8_t r, uint8_t g, uint8_t b) {
     g_blue_value = b;
     rmt_app_save_config_to_flash();
 }
+
+void rmt_app_set_from_json(cJSON *json) {
+    const cJSON *state = cJSON_GetObjectItemCaseSensitive(json, "state");
+    if (state == NULL || !cJSON_IsNumber(state) || state->valueint < 0 || state->valueint > 1)
+        ESP_LOGE(TAG, "Missing or invalid state provided by JSON!");
+    else g_rmt_app_state = state->valueint;
+
+    // Check if LED was turned off
+    if (g_rmt_app_state == RMT_APP_LED_OFF) return;
+
+    const cJSON *mode = cJSON_GetObjectItemCaseSensitive(json, "mode");
+    if (mode == NULL || !cJSON_IsNumber(mode) || mode->valueint < 0 || mode->valueint > RMT_APP_LED_MODES_COUNT - 1)
+        ESP_LOGE(TAG, "Missing or invalid mode provided by JSON!");
+    else g_rmt_app_sel_mode = mode->valueint;
+
+    // Check if LED mode was set rainbow
+    if (g_rmt_app_sel_mode == RMT_APP_LED_MODE_RAINBOW) return;
+
+    const cJSON *color_json = cJSON_GetObjectItemCaseSensitive(json, "color");
+    if (color_json == NULL) {
+        ESP_LOGE(TAG, "Missing or invalid color object provided by JSON!");
+        return;
+    }
+
+    const cJSON *red = cJSON_GetObjectItemCaseSensitive(color_json, "red");
+    if (red == NULL || !cJSON_IsNumber(red) || red->valueint < 0 || red->valueint > 255)
+        ESP_LOGE(TAG, "Missing or invalid red value provided by JSON!");
+    else g_red_value = red->valueint;
+
+    const cJSON *green = cJSON_GetObjectItemCaseSensitive(color_json, "green");
+    if (green == NULL || !cJSON_IsNumber(green) || green->valueint < 0 || green->valueint > 255)
+        ESP_LOGE(TAG, "Missing or invalid green value provided by JSON!");
+    else g_green_value = green->valueint;
+
+    const cJSON *blue = cJSON_GetObjectItemCaseSensitive(color_json, "blue");
+    if (blue == NULL || !cJSON_IsNumber(blue) || blue->valueint < 0 || blue->valueint > 255)
+        ESP_LOGE(TAG, "Missing or invalid blue value provided by JSON!");
+    else g_blue_value = blue->valueint;
+}

@@ -17,6 +17,8 @@
 #define MQTT_APP_USERNAME              "led-strip-client"
 #define MQTT_APP_PASSWORD              "NQXkhiDZtd7rZGWQNmV9"
 
+#define MQTT_APP_TAG_LED_STRIP         "led_strip"
+
 /**
 * Start the MQTT Communication Application
 */
