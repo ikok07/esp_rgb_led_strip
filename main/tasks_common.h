@@ -29,9 +29,11 @@
 #define WIFI_APP_TASK_STACK_SIZE              8192
 #define WIFI_APP_TASK_CORE_ID                 1
 
-// MQTT's Core Id is configured in menuconfig
+// MQTT's subscribtion task core id is configured in menuconfig
 #define MQTT_APP_TASK_PRIORITY                3
 #define MQTT_APP_TASK_STACK_SIZE              4096
+#define MQTT_APP_TASK_CORE_ID                 1
+
 
 #define HTTP_SERVER_TASK_PRIORITY             2
 #define HTTP_SERVER_TASK_STACK_SIZE           8192

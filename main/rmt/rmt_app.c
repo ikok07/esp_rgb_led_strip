@@ -134,7 +134,6 @@ static void rmt_app_get_config_from_flash() {
     if (err != ESP_OK) ESP_LOGE(TAG, "Failed to get blue value from NVS: %s", esp_err_to_name(err));
 
     nvs_close(nvs_handle);
-
 }
 
 // --------- RMT MESSAGE QUEUE --------- //
@@ -415,4 +414,18 @@ void rmt_app_set_from_json(cJSON *json) {
     if (blue == NULL || !cJSON_IsNumber(blue) || blue->valueint < 0 || blue->valueint > 255)
         ESP_LOGE(TAG, "Missing or invalid blue value provided by JSON!");
     else g_blue_value = blue->valueint;
+}
+
+rmt_app_active_config_t rmt_app_get_active_config() {
+    const rmt_app_active_config_t active_config = {
+    .state = g_rmt_app_state,
+    .mode = g_rmt_app_sel_mode,
+    .colors = {
+        .red = g_red_value,
+        .green = g_green_value,
+        .blue = g_blue_value
+    }
+    };
+
+    return active_config;
 }

@@ -72,6 +72,15 @@ typedef struct {
 } rmt_app_transmit_config_t;
 
 /**
+ * Structure containing the current active RMT configuration
+ */
+typedef struct {
+  rmt_app_state_e state;
+  rmt_app_mode_e mode;
+  rmt_app_transmit_config_t colors;
+} rmt_app_active_config_t;
+
+/**
  * Initialized the rmt application
  */
 void rmt_app_start(void);
@@ -95,5 +104,11 @@ void rmt_app_set_rgb_color(uint8_t r, uint8_t g, uint8_t b);
  * @param json pointer to cJSON object
  */
 void rmt_app_set_from_json(cJSON *json);
+
+/**
+ * Gets the current active RMT configuration
+ * @return rmt_app_active_config_t structure
+ */
+rmt_app_active_config_t rmt_app_get_active_config();
 
 #endif //RMT_APP_H

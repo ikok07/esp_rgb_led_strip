@@ -294,7 +294,11 @@ static void wifi_app_start_driver(void) {
 
     // Initialize the WiFi
     const wifi_init_config_t wifi_config = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&wifi_config));
+    esp_err_t err = esp_wifi_init(&wifi_config);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize WIFI! Error: %s", esp_err_to_name(err));
+        return;
+    }
     ESP_LOGI(TAG, "WiFi driver successfully started!");
 }
 
@@ -350,9 +354,12 @@ void wifi_app_init(void) {
     wifi_app_ap_configure();
 
     // Start the WiFi driver
-    ESP_ERROR_CHECK(esp_wifi_start());
+    esp_err_t err = esp_wifi_start();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start WIFI! Error: %s", esp_err_to_name(err));
+    }
 
-    // Disable verbose logging
+    // // Disable verbose logging
     esp_log_level_set("wifi", ESP_LOG_ERROR);
 
     // Configure STA mode
@@ -363,13 +370,13 @@ void wifi_app_init(void) {
     wifi_app_send_message(WIFI_APP_MSG_CONNECT, NULL);
 
     xTaskCreatePinnedToCore(
-        &wifi_app_msg_queue_task,
-        "wifi_app_msg_queue_task",
-        WIFI_APP_TASK_STACK_SIZE,
-        NULL,
-        WIFI_APP_TASK_PRIORITY,
-        NULL,
-        WIFI_APP_TASK_CORE_ID
+    &wifi_app_msg_queue_task,
+    "wifi_app_msg_queue_task",
+    WIFI_APP_TASK_STACK_SIZE,
+    NULL,
+    WIFI_APP_TASK_PRIORITY,
+    NULL,
+    WIFI_APP_TASK_CORE_ID
     );
 }
 
